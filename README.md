@@ -1,4 +1,4 @@
-# FunPlus SDK
+# FunPlus SDK Core
 
 ## Requirements
 
@@ -31,7 +31,7 @@ import FunPlusSDK
 
 let APP_ID = "test"
 let APP_KEY = "funplus"
-let ENV = SDKEnvironment.sandbox
+let ENV = SDKEnvironment.sandbox	// sandbox/production
 
 func application(_ application: UIApplication, didFinishLaunchingWithOptions
 	launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
@@ -83,5 +83,3 @@ public func traceServiceMonitoring(
     gameServerId: String
 )
 ```
-
-## FAQs

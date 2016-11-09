@@ -6,6 +6,7 @@ build/
 DerivedData
 docs/
 [Rr]elease/
+Config/
 
 # Various settings
 *.pbxuser
