@@ -1,8 +1,13 @@
 # Changelog
 
+### v4.0.2-alpha.0
+
+* Deprecate the `ConfigManager` class.
+* Modify fields in Data events.
+
 ### v4.0.1-alpha.1
 
-* bugfix: [Missing required module 'CommonCrypto']
+* bugfix: [Missing required module 'CommonCrypto'].
 
 ### v4.0.1-alpha.0
 
