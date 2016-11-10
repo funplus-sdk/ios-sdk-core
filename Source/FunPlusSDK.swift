@@ -28,6 +28,7 @@ public class FunPlusSDK {
     let funPlusConfig: FunPlusConfig
     let installDate: Date
     
+    // Deprecated
     public class func install(funPlusConfig: FunPlusConfig) {
         if instance == nil {
             print("[FunPlusSDK] Installing FunPlus SDK: {sdkVersion=\(FunPlusSDK.VERSION), appId=\(funPlusConfig.appId), env=\(funPlusConfig.environment)}")
@@ -37,10 +38,20 @@ public class FunPlusSDK {
         }
     }
     
+    // Deprecated
     public class func install(appId: String, appKey: String, environment: SDKEnvironment) throws {
         if instance == nil {
             let funPlusConfig = try ConfigManager(appId: appId, appKey: appKey, environment: environment).getFunPlusConfig()
             install(funPlusConfig: funPlusConfig)
+        } else {
+            print("[FunPlusSDK] FunPlus SDK has been installed, there's no need to install it again")
+        }
+    }
+    
+    public class func install(appId: String, appKey: String, rumTag: String, rumKey: String, environment: SDKEnvironment) {
+        if (instance == nil) {
+            let funPlusConfig = FunPlusConfig(appId: appId, appKey: appKey, rumTag: rumTag, rumKey: rumKey, environment: environment)
+            instance = FunPlusSDK(funPlusConfig: funPlusConfig)
         } else {
             print("[FunPlusSDK] FunPlus SDK has been installed, there's no need to install it again")
         }

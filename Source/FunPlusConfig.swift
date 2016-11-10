@@ -14,6 +14,8 @@ public class FunPlusConfig {
     
     // MARK: - Properties
     
+    static let LOG_SERVER = "https://logagent.infra.funplus.net/log"
+    
     let appId: String
     let appKey: String
     let environment: SDKEnvironment
@@ -42,6 +44,36 @@ public class FunPlusConfig {
     
     // MARK: - Init
     
+    init(appId: String, appKey: String, rumTag: String, rumKey: String, environment: SDKEnvironment) {
+        self.appId = appId
+        self.appKey = appKey
+        self.environment = environment
+        
+        self.configEtag = "deprecated"
+        
+        self.loggerEndpoint = FunPlusConfig.LOG_SERVER
+        self.loggerTag = rumTag
+        self.loggerKey = rumKey
+        self.logLevel = environment == .sandbox ? LogLevel.info : LogLevel.error
+        self.loggerUploadInterval = 60
+        
+        self.rumEndpoint = FunPlusConfig.LOG_SERVER
+        self.rumTag = rumTag
+        self.rumKey = rumKey
+        self.rumUploadInterval = 10
+        
+        self.rumSampleRate = 1.0
+        self.rumEventWhitelist = []
+        self.rumUserWhitelist = []
+        self.rumUserBlacklist = []
+        
+        self.dataEndpoint = FunPlusConfig.LOG_SERVER
+        self.dataTag = appId
+        self.dataKey = appKey
+        self.dataUploadInterval = 10
+    }
+    
+    // Deprecated
     init(appId: String, appKey: String, environment: SDKEnvironment, configEtag: String, configDict: [String: Any]) throws {
         // General
         self.appId = appId

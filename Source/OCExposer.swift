@@ -17,6 +17,7 @@ import Foundation
     
     // MARK: - FunPlusSDK
     
+    // Deprecated
     @objc public class func install(appId: String, appKey: String, environment: String) {
         guard let env = SDKEnvironment(rawValue: environment) else {
             print("[FATAL] Cannot resolve the `environment` parameter")
@@ -28,6 +29,27 @@ import Foundation
         } catch let e {
             print("[FATAL] Failed to install FunPlus SDK, error: \(e)")
         }
+    }
+    
+    @objc public class func install(
+        appId: String,
+        appKey: String,
+        rumTag: String,
+        rumKey: String,
+        environment: String)
+    {
+        guard let env = SDKEnvironment(rawValue: environment) else {
+            print("[FATAL] Cannot resolve the `environment` parameter")
+            return
+        }
+        
+        FunPlusSDK.install(
+            appId: appId,
+            appKey: appKey,
+            rumTag: rumTag,
+            rumKey: rumKey,
+            environment: env
+        )
     }
     
     @objc public class func getFPID(
