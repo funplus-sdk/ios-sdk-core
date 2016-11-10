@@ -56,8 +56,6 @@ class DeviceInfo {
         return "\(version) build \(build)"
     }()
     
-    
-    
     /// App language. It might be different from the device's default language.
     static let appLanguage: String = {
         return (Locale.current as NSLocale).object(forKey: NSLocale.Key.languageCode) as? String ?? "en"
