@@ -12,6 +12,16 @@ import Foundation
 private extension String {
     var core: String { return "\(self).core" }
     var custom: String { return "\(self).custom" }
+    
+    func toJsonObject() -> Any? {
+        guard let data = self.data(using: String.Encoding.utf8) else { return nil }
+        
+        do {
+            return try JSONSerialization.jsonObject(with: data, options: []) as? Any
+        } catch {
+            return nil
+        }
+    }
 }
 
 // MARK: - DataEventTracedListener
@@ -189,8 +199,8 @@ public class FunPlusData: SessionStatusChangeListener {
                 "iab_product_type":         productType ?? "",
                 "transaction_id":           transactionId,
                 "payment_processor":        paymentProcessor,
-                "c_items_received":         itemsReceived,
-                "c_currency_received":      currencyReceived,
+                "c_items_received":         itemsReceived.toJsonObject() ?? [],
+                "c_currency_received":      currencyReceived.toJsonObject() ?? [],
                 "d_currency_received_type": currencyReceivedType
             ]
         )
@@ -216,7 +226,8 @@ public class FunPlusData: SessionStatusChangeListener {
             "device":       DeviceInfo.modelName,
             "os":           DeviceInfo.systemName,
             "os_version":   DeviceInfo.systemVersion,
-            "lang":         DeviceInfo.appLanguage
+            "lang":         DeviceInfo.appLanguage,
+            "install_ts":   "\(Int64(FunPlusSDK.getInstallDate().timeIntervalSince1970) * 1000)"
         ]
         
         if let customProperties = customProperties {
@@ -227,9 +238,9 @@ public class FunPlusData: SessionStatusChangeListener {
 
         return [
             "event":        eventName,
-            "data_version": "1.0",
+            "data_version": "2.0",
             "ts":           "\(Int64(Date().timeIntervalSince1970) * 1000)",
-            "app_id":       funPlusConfig.appId,
+            "app_id":       funPlusConfig.dataTag,
             "user_id":      sessionManager.userId,
             "session_id":   sessionManager.sessionId,
             

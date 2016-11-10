@@ -23,7 +23,10 @@ public class FunPlusSDK {
     static var instance: FunPlusSDK?
     static var shared = { return instance! }()
     
+    static let INSTALL_DATE_SAVED_KEY = "com.funplus.sdk.InstallDate"
+    
     let funPlusConfig: FunPlusConfig
+    let installDate: Date
     
     public class func install(funPlusConfig: FunPlusConfig) {
         if instance == nil {
@@ -45,10 +48,18 @@ public class FunPlusSDK {
     
     private init(funPlusConfig: FunPlusConfig) {
         self.funPlusConfig = funPlusConfig
+        
+        installDate = UserDefaults.standard.object(forKey: FunPlusSDK.INSTALL_DATE_SAVED_KEY) as? Date ?? Date()
+        UserDefaults.standard.set(installDate, forKey: FunPlusSDK.INSTALL_DATE_SAVED_KEY)
+        
         let _ = FunPlusFactory.getLoggerDataConsumer(funPlusConfig: funPlusConfig)
         let _ = FunPlusFactory.getFunPlusID(funPlusConfig: funPlusConfig)
         let _ = FunPlusFactory.getFunPlusRUM(funPlusConfig: funPlusConfig)
         let _ = FunPlusFactory.getFunPlusData(funPlusConfig: funPlusConfig)
+    }
+    
+    public class func getInstallDate() -> Date {
+        return instance?.installDate ?? Date()
     }
     
     public class func getFunPlusID() -> FunPlusID {
