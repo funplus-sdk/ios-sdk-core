@@ -11,8 +11,8 @@ import XCTest
 
 class FunPlusConfigFactory {
     
-    static let APP_ID = "test"
-    static let APP_KEY = "funplus"
+    static let APP_ID = "1007"
+    static let APP_KEY = "FUNPLUS_GAME_KEY"
     static let CONFIG_ETAG = ""
     static let ENV = SDKEnvironment.sandbox
 

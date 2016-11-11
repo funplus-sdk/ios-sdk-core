@@ -73,6 +73,13 @@ public class FunPlusSDK {
         return instance?.installDate ?? Date()
     }
     
+    class func getSessionManager() -> SessionManager {
+        if instance == nil {
+            print("[FunPlusSDK] FunPlus SDK has not been installed yet.")
+        }
+        return FunPlusFactory.getSessionManager(funPlusConfig: shared.funPlusConfig)
+    }
+    
     public class func getFunPlusID() -> FunPlusID {
         if instance == nil {
             print("[FunPlusSDK] FunPlus SDK has not been installed yet.")

@@ -52,9 +52,9 @@ class PassportClient {
     func get(externalID: String, externalIDType: ExternalIDType, completion: @escaping (FunPlusIDResult) -> Void) {
         let params = [
             "method":               "get",
-            "app_id":               funPlusConfig.appId,
-            "external_id":          externalID,
-            "external_id_type":     externalIDType.rawValue
+            "game_id":               funPlusConfig.appId,
+            "guid":          externalID,
+            "guid_type":     externalIDType.rawValue
         ]
         
         request(params: params, completion: completion)
@@ -70,10 +70,10 @@ class PassportClient {
     func bind(fpid: String, externalID: String, externalIDType: ExternalIDType, completion: @escaping (FunPlusIDResult) -> Void) {
         let params = [
             "method":               "bind",
-            "app_id":               funPlusConfig.appId,
+            "game_id":               funPlusConfig.appId,
             "fpid":                 fpid,
-            "external_id":          externalID,
-            "external_id_type":     externalIDType.rawValue
+            "guid":          externalID,
+            "guid_type":     externalIDType.rawValue
         ]
         
         request(params: params, completion: completion)
@@ -93,7 +93,7 @@ class PassportClient {
         let url = "\(endpoint)?ver=\(PassportClient.API_VERSION)"
         let sig = makeSignature(params: params)
         
-        RequestSessionManager.default.request(url, method: .post, parameters: params, encoding: JSONEncoding.default, headers: ["authorization": "FP \(appId):\(sig)"])
+        RequestSessionManager.default.request(url, method: .post, parameters: params, headers: ["authorization": "FP \(appId):\(sig)"])
             .validate()
             .responseJSON { res in
                 //==============================================

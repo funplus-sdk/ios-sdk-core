@@ -52,6 +52,10 @@ import Foundation
         )
     }
     
+    @objc public class func getSessionId() -> String {
+        return FunPlusSDK.getSessionManager().sessionId
+    }
+    
     @objc public class func getFPID(
         externalID: String,
         externalIDTypeString: String,
