@@ -17,7 +17,7 @@ private extension String {
         guard let data = self.data(using: String.Encoding.utf8) else { return nil }
         
         do {
-            return try JSONSerialization.jsonObject(with: data, options: []) as? Any
+            return try JSONSerialization.jsonObject(with: data, options: [])
         } catch {
             return nil
         }

@@ -26,6 +26,8 @@ class LogAgentClient {
     
     // MARK: - Properties
     
+    static let MAX_QUEUE_SIZE = 1024
+    
     let funPlusConfig: FunPlusConfig
     
     /// The label of current `LogAgentClient` instance, **should be globally unique**.
@@ -110,6 +112,9 @@ class LogAgentClient {
     
     func trace(_ entry: String) {
         serialQueue.async {
+            if (self.dataQueue.count > LogAgentClient.MAX_QUEUE_SIZE) {
+                self.dataQueue.removeFirst()
+            }
             self.dataQueue.append(entry)
         }
     }
