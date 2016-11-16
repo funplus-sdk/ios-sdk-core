@@ -60,7 +60,7 @@ public class FunPlusID {
     /**
         Bind the given external user ID to given FPID.
      
-        - parameter fpid:       The FPID.
+        - parameter fpid:           The FPID.
         - parameter externalID:     The external uesr ID.
         - parameter externalIDType: Type of the external user ID.
      */
