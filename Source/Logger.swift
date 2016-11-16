@@ -74,8 +74,12 @@ class Logger {
         callStackSymbols: String? = nil)
     {
         let filename = file.components(separatedBy: "/").last ?? "unknown"
-        let callStackSymbols = Thread.callStackSymbols.joined(separator: "\n")
         let log = "[\(logLevelString) \(function) \(filename):\(line)] \(message)"
+        var callStackSymbols = ""
+        
+        if logLevelString == "ERROR" || logLevelString == "FATAL" {
+            callStackSymbols = Thread.callStackSymbols.joined(separator: "\n")
+        }
         
         print(log)
         
