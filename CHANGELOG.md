@@ -3,6 +3,9 @@
 ### v4.0.3-alpha.1
 
 * `FunPlusData.traceCustom(eventName: String, properties: [String: Any])`
+* Increase uploading interval.
+* Set maximum data queue size.
+* Remove call stacks from INFO events.
 
 ### v4.0.3-alpha.0
 
