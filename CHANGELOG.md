@@ -6,6 +6,7 @@
 * Increase uploading interval.
 * Set maximum data queue size.
 * Remove call stacks from INFO events.
+* Modify logger events format.
 
 ### v4.0.3-alpha.0
 

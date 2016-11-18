@@ -81,7 +81,7 @@ class LogAgentDataUploader {
             // Upload completes? Return.
             guard total > uploaded else {
                 completion(total == uploaded, total, uploaded)
-                print("Upload complete, total: \(total), uploaded: \(uploaded)")
+                print("[FunPlusSDK] Upload complete, total: \(total), uploaded: \(uploaded)")
                 return
             }
             
@@ -114,7 +114,7 @@ class LogAgentDataUploader {
                     ))
                     
                     completion(total == uploaded, total, uploaded)
-                    print("Upload failed, total: \(total), uploaded: \(uploaded), batch: \(batchSize)")
+                    print("[FunPlusSDK] Upload failed, total: \(total), uploaded: \(uploaded), batch: \(batchSize)")
                     
                     // Break.
                     return
@@ -130,7 +130,7 @@ class LogAgentDataUploader {
                     duration: NSDate().timeIntervalSince(startTime)
                 ))
                 
-                print("Upload success, total: \(total), uploaded: \(uploaded), batch: \(batchSize)")
+                print("[FunPlusSDK] Upload success, total: \(total), uploaded: \(uploaded), batch: \(batchSize)")
                 
                 // Continue.
                 closure()

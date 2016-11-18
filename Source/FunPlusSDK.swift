@@ -21,11 +21,16 @@ public class FunPlusSDK {
     public static let VERSION = "4.0.3-alpha.0"
     
     static var instance: FunPlusSDK?
+    
+    /// Shared instance of `FunPlusSDK`.
+    /// Must be used after SDK is installed, otherwise will throw exception.
     static var shared = { return instance! }()
     
     static let INSTALL_DATE_SAVED_KEY = "com.funplus.sdk.InstallDate"
     
     let funPlusConfig: FunPlusConfig
+    
+    /// Data events are interested in app's install date.
     let installDate: Date
     
     // Deprecated

@@ -8,6 +8,7 @@
 
 import Foundation
 
+// TODO
 class DataEventValidator {
     
     class func validate(event: [String: Any]) -> Bool {

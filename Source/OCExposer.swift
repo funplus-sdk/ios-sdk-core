@@ -20,14 +20,14 @@ import Foundation
     // Deprecated
     @objc public class func install(appId: String, appKey: String, environment: String) {
         guard let env = SDKEnvironment(rawValue: environment) else {
-            print("[FATAL] Cannot resolve the `environment` parameter")
+            print("[FunPlusSDK] Cannot resolve the `environment` parameter")
             return
         }
         
         do {
             try FunPlusSDK.install(appId: appId, appKey: appKey, environment: env)
         } catch let e {
-            print("[FATAL] Failed to install FunPlus SDK, error: \(e)")
+            print("[FunPlusSDK] Failed to install FunPlus SDK, error: \(e)")
         }
     }
     
@@ -39,7 +39,7 @@ import Foundation
         environment: String)
     {
         guard let env = SDKEnvironment(rawValue: environment) else {
-            print("[FATAL] Cannot resolve the `environment` parameter")
+            print("[FunPlusSDK] Cannot resolve the `environment` parameter")
             return
         }
         
@@ -137,7 +137,7 @@ import Foundation
     
     @objc public class func traceDataCustom(eventString: String) {
         guard let data = eventString.data(using: String.Encoding.utf8) else {
-            print("Invalid custom event string")
+            print("[FunPlusSDK] Invalid custom event string")
             return
         }
         
@@ -145,19 +145,19 @@ import Foundation
             let serializedEvent = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
             
             guard let event = serializedEvent else {
-                print("Invalid custom event string")
+                print("[FunPlusSDK] Invalid custom event string")
                 return
             }
             
             FunPlusSDK.getFunPlusData().traceCustom(event: event)
         } catch let e {
-            print("Invalid custom event string, error: \(e)")
+            print("[FunPlusSDK] Invalid custom event string, error: \(e)")
         }
     }
     
     @objc public class func traceDataCustom(eventName: String, propertiesString: String) {
         guard let data = propertiesString.data(using: String.Encoding.utf8) else {
-            print("Invalid custom event properties string")
+            print("[FunPlusSDK] Invalid custom event properties string")
             return
         }
         
@@ -165,13 +165,13 @@ import Foundation
             let serializedProperties = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
             
             guard let properties = serializedProperties else {
-                print("Invalid custom event properties string")
+                print("[FunPlusSDK] Invalid custom event properties string")
                 return
             }
             
             FunPlusSDK.getFunPlusData().traceCustom(eventName: eventName, properties: properties)
         } catch let e {
-            print("Invalid custom event string, error: \(e)")
+            print("[FunPlusSDK] Invalid custom event string, error: \(e)")
         }
     }
     

@@ -41,6 +41,8 @@ public class FunPlusID {
     
     init(funPlusConfig: FunPlusConfig) {
         passportClient = PassportClient(funPlusConfig: funPlusConfig)
+        
+        print("[FunPlusSDK] FunPlusID ready to work")
     }
     
     /**

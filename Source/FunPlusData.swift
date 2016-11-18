@@ -19,6 +19,7 @@ private extension String {
         do {
             return try JSONSerialization.jsonObject(with: data, options: [])
         } catch {
+            print("[FunPlusSDK] unable to convert string to JSON object")
             return nil
         }
     }
@@ -118,6 +119,7 @@ public class FunPlusData: SessionStatusChangeListener {
             kpiTraceHistory.append(eventString: jsonString, traceTime: Date())
             #endif
             
+            // Publish this event.
             for listener in listeners {
                 listener.kpiEventTraced(event: event)
             }
@@ -128,6 +130,7 @@ public class FunPlusData: SessionStatusChangeListener {
             customTraceHistory.append(eventString: jsonString, traceTime: Date())
             #endif
             
+            // Publish this event.
             for listener in listeners {
                 listener.customEventTraced(event: event)
             }

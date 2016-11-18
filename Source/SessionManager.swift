@@ -36,7 +36,7 @@ class SessionManager {
         
         registerNotificationObservers()
         
-        print("SessionManager ready to work")
+        print("[FunPlusSDK] SessionManager ready to work")
     }
     
     deinit {
@@ -69,7 +69,7 @@ class SessionManager {
     
     func endSession() {
         if sessionStartTs == nil {
-            print("Unable to end session: there's no active session")
+            print("[FunPlusSDK] Unable to end session: there's no active session")
             return
         }
         
