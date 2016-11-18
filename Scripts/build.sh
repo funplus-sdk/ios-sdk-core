@@ -31,10 +31,10 @@ mkdir $out
 cp {README,CHANGELOG}.md $out/
 
 # build device SDK
-xcodebuild -target FunPlusSDK -configuration Release -sdk iphoneos10.1
+xcodebuild -target FunPlusSDK -configuration Release -sdk iphoneos
 
 # build simulator SDK
-xcodebuild -target FunPlusSDK -configuration Release -sdk iphonesimulator10.1
+xcodebuild -target FunPlusSDK -configuration Release -sdk iphonesimulator
 
 build_dir=Build/Products
 device_framework=$build_dir/Release-iphoneos/FunPlusSDK.framework
@@ -44,4 +44,5 @@ fat_framework=$build_dir/FunPlusSDK.framework
 lipo -create -output $build_dir/FunPlusSDK $device_framework/FunPlusSDK $simulator_framework/FunPlusSDK
 cp -R $device_framework $fat_framework
 mv $build_dir/FunPlusSDK $fat_framework/FunPlusSDK
+echo $ver > $fat_framework/VERSION
 cp -R $fat_framework $out/FunPlusSDK.framework
