@@ -93,24 +93,24 @@ class Logger {
         let sessionManager = FunPlusFactory.getSessionManager(funPlusConfig: funPlusConfig)
         
         let dict: [String: Any] = [
-            "event": "log_entry",
-            "ts": "\(Int64(Date().timeIntervalSince1970 * 1000))",
-            "app_id": funPlusConfig.appId,
-            "app_version": DeviceInfo.appVersion,
-            "user_id": sessionManager.userId,
-            "session_id": sessionManager.sessionId,
-            "rum_id": DeviceInfo.identifierForVendor ?? "",
-            "data_version": "1.0",
+            "event":            "log_entry",
+            "ts":               "\(Int64(Date().timeIntervalSince1970 * 1000))",
+            "app_id":           funPlusConfig.appId,
+            "app_version":      DeviceInfo.appVersion,
+            "user_id":          sessionManager.userId,
+            "session_id":       sessionManager.sessionId,
+            "rum_id":           DeviceInfo.identifierForVendor ?? "",
+            "data_version":     "1.0",
             
             "properties": [
-                "app_version": DeviceInfo.appVersion,
-                "sdk_version": FunPlusSDK.VERSION,
-                "config_etag": funPlusConfig.configEtag,
-                "device": DeviceInfo.modelName,
-                "os": DeviceInfo.systemName,
-                "os_version": DeviceInfo.systemVersion,
-                "log": log,
-                "log_level": logLevelString,
+                "app_version":  DeviceInfo.appVersion,
+                "sdk_version":  FunPlusSDK.VERSION,
+                "config_etag":  funPlusConfig.configEtag,
+                "device":       DeviceInfo.modelName,
+                "os":           DeviceInfo.systemName,
+                "os_version":   DeviceInfo.systemVersion,
+                "log":          log,
+                "log_level":    logLevelString,
                 "call_stack_symbols": callStackSymbols
             ]
         ]
