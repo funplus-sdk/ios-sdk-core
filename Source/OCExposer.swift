@@ -155,6 +155,26 @@ import Foundation
         }
     }
     
+    @objc public class func traceDataCustom(eventName: String, propertiesString: String) {
+        guard let data = propertiesString.data(using: String.Encoding.utf8) else {
+            print("Invalid custom event properties string")
+            return
+        }
+        
+        do {
+            let serializedProperties = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+            
+            guard let properties = serializedProperties else {
+                print("Invalid custom event properties string")
+                return
+            }
+            
+            FunPlusSDK.getFunPlusData().traceCustom(eventName: eventName, properties: properties)
+        } catch let e {
+            print("Invalid custom event string, error: \(e)")
+        }
+    }
+    
     @objc public class func traceDataPayment(
         amount: Double,
         currency: String,

@@ -144,6 +144,10 @@ public class FunPlusData: SessionStatusChangeListener {
         trace(eventType: .custom, event: event)
     }
     
+    public func traceCustom(eventName: String, properties: [String: Any]) {
+        trace(eventType: .custom, event: buildDataEvent(eventName: eventName, customProperties: properties))
+    }
+    
     public func traceSessionStart() {
         trace(eventType: .kpi, event: buildDataEvent(eventName: "session_start"))
     }

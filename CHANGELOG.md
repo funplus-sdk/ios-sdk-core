@@ -1,5 +1,9 @@
 # Changelog
 
+### v4.0.3-alpha.1
+
+* `FunPlusData.traceCustom(eventName: String, properties: [String: Any])`
+
 ### v4.0.3-alpha.0
 
 * `PassportClient` bugfix.
