@@ -99,8 +99,11 @@ class Logger {
             "app_version": DeviceInfo.appVersion,
             "user_id": sessionManager.userId,
             "session_id": sessionManager.sessionId,
+            "rum_id": DeviceInfo.identifierForVendor ?? "",
+            "data_version": "1.0",
             
             "properties": [
+                "app_version": DeviceInfo.appVersion,
                 "sdk_version": FunPlusSDK.VERSION,
                 "config_etag": funPlusConfig.configEtag,
                 "device": DeviceInfo.modelName,
