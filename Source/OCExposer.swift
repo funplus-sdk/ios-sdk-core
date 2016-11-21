@@ -184,8 +184,7 @@ import Foundation
         transactionId: String,
         paymentProcessor: String,
         itemsReceived: String,
-        currencyReceived: String,
-        currencyReceivedType: String)
+        currencyReceived: String)
     {
         FunPlusSDK.getFunPlusData().tracePayment(
             amount: amount,
@@ -196,8 +195,7 @@ import Foundation
             transactionId: transactionId,
             paymentProcessor: paymentProcessor,
             itemsReceived: itemsReceived,
-            currencyReceived: currencyReceived,
-            currencyReceivedType: currencyReceivedType
+            currencyReceived: currencyReceived
         )
     }
     

@@ -41,6 +41,7 @@
 		D79154AF1DA95AE300CFF124 /* FunPlusRUM.swift in Sources */ = {isa = PBXBuildFile; fileRef = D79154AE1DA95AE300CFF124 /* FunPlusRUM.swift */; };
 		D79154B11DA95B2A00CFF124 /* ConfigManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D79154B01DA95B2A00CFF124 /* ConfigManager.swift */; };
 		D7AD02CB1CA8DC3C007EBD6F /* FunPlusSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7AD02C01CA8DC3C007EBD6F /* FunPlusSDK.framework */; };
+		D7B9EBAB1DE303B300E679FA /* OCExposerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7B9EBAA1DE303B300E679FA /* OCExposerTests.swift */; };
 		D7BBC7601DD57AEA0029F2E3 /* PassportClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7BBC75F1DD57AEA0029F2E3 /* PassportClientTests.swift */; };
 		D7CC89981DCC9FB4005964EC /* AFError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7CC89871DCC9FB4005964EC /* AFError.swift */; };
 		D7CC89991DCC9FB4005964EC /* Alamofire.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7CC89881DCC9FB4005964EC /* Alamofire.swift */; };
@@ -176,6 +177,7 @@
 		D79154B01DA95B2A00CFF124 /* ConfigManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ConfigManager.swift; path = Source/ConfigManager.swift; sourceTree = "<group>"; };
 		D7AD02C01CA8DC3C007EBD6F /* FunPlusSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FunPlusSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7AD02CA1CA8DC3C007EBD6F /* FunPlusSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FunPlusSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D7B9EBAA1DE303B300E679FA /* OCExposerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OCExposerTests.swift; path = Tests/OCExposerTests.swift; sourceTree = "<group>"; };
 		D7BBC75F1DD57AEA0029F2E3 /* PassportClientTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PassportClientTests.swift; path = Tests/PassportClientTests.swift; sourceTree = "<group>"; };
 		D7CC89871DCC9FB4005964EC /* AFError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AFError.swift; path = Source/Alamofire/AFError.swift; sourceTree = "<group>"; };
 		D7CC89881DCC9FB4005964EC /* Alamofire.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Alamofire.swift; path = Source/Alamofire/Alamofire.swift; sourceTree = "<group>"; };
@@ -374,6 +376,7 @@
 				D7FDA94F1DBBCF07008F370E /* DataEventValidatorTests.swift */,
 				D7FDA9511DBCBD11008F370E /* FunPlusDataTests.swift */,
 				D7BBC75F1DD57AEA0029F2E3 /* PassportClientTests.swift */,
+				D7B9EBAA1DE303B300E679FA /* OCExposerTests.swift */,
 			);
 			name = Tests;
 			sourceTree = "<group>";
@@ -726,6 +729,7 @@
 				D7FDA9501DBBCF07008F370E /* DataEventValidatorTests.swift in Sources */,
 				D78CBF981DB4EF9F00DEB47F /* LoggerDataConsumerTests.swift in Sources */,
 				D76CD1B61DACEF8F006D47E6 /* FunPlusConfigFactory.swift in Sources */,
+				D7B9EBAB1DE303B300E679FA /* OCExposerTests.swift in Sources */,
 				D7FDA9521DBCBD11008F370E /* FunPlusDataTests.swift in Sources */,
 				D76CD1B31DACEEE4006D47E6 /* LogAgentDataUploaderTests.swift in Sources */,
 				D76CD1B41DACEEE4006D47E6 /* FunPlusRUMTests.swift in Sources */,

@@ -1,5 +1,10 @@
 # Changelog
 
+### v4.0.3-alpha.2
+
+* Remove `currencyReceivedType` from payment events.
+* Fields correction in payment events.
+
 ### v4.0.3-alpha.1
 
 * `FunPlusData.traceCustom(eventName: String, properties: [String: Any])`
