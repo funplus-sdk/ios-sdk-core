@@ -7,9 +7,22 @@
 * Swift 3.0+
 * The Xcode Terminal Tools (which provide the `xcodebuild` command)
 
-## Example Apps
+## Table of  Contents
 
-There are example apps inside the `samples` directory. You can open any of these Xcode projects to see an example of how the FunPlus SDK can be integrated.
+* [Integration](#integration)
+  * [Add the SDK to Your Project](#add-the-sdk-to-your-project)
+  * [Install the SDK](#install-the-sdk)
+* [Usage](#usage)
+  * [The ID Module](#the-id-module)
+    - [Get an FPID Based on a Given User ID](get-an-fpid-based-on-a-given-user-id)
+    - [Bind a New User ID to an Existing FPID](#bind-a-new-user-id-to-an-existing-fpid)
+  * [The RUM Module](#the-rum-module)
+    - [Trace a Service Monitoring Event](#trace-a-service-monitoring-event)
+    - [Set Extra Properties to RUM Events](#set-extra-properties-to-rum-events)
+  * [The Data Module](#the-data-module)
+    - [Trace Custom Events](#trace-custom-events)
+    - [Set Extra Properties to Data Events](#set-extra-properties-to-data-events)
+* [FAQ](#faq)
 
 ## Integration
 
@@ -49,7 +62,7 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions
 
 The objective of the ID module is to provide a unified ID for each unique user and consequently make it possible to identify users across all FunPlus services (marketing, payment, etc). Note that the ID module can not be treated as an account module, therefore you cannot use this module to complete common account functionalities such as registration and logging in.
 
-**Get an FPID based on a given user ID**
+#### Get an FPID based on a given user ID
 
 ```swift
 FunPlusSDK.getFunPlusID().get(externalID: "{userid}", externalIDType: ExternalIDType.inAppUserID) { res in
@@ -62,7 +75,7 @@ FunPlusSDK.getFunPlusID().get(externalID: "{userid}", externalIDType: ExternalID
 }
 ```
 
-**Bind a new user ID to an existing FPID**
+#### Bind a new user ID to an existing FPID
 
 ```swift
 FunPlusSDK.getFunPlusID().bind(fpid: "{fpid}", externalID: "{userid}", externalIDType: ExternalIDType.inAppUserID) { res in
@@ -79,7 +92,7 @@ FunPlusSDK.getFunPlusID().bind(fpid: "{fpid}", externalID: "{userid}", externalI
 
 The RUM module monitors user's actions in real-time and uploads collected data to Log Agent.
 
-**Trace a service_monitoring event**
+#### Trace a Service Monitoring Event
 
 ```swift
 FunPlusSDK.getFunPlusRUM().traceServiceMonitoring(...)
@@ -116,7 +129,7 @@ public func traceServiceMonitoring(
 )
 ```
 
-**Set extra properties to RUM events**
+#### Set Extra Properties to RUM Events
 
 Sometimes you might want to attach extra properties to RUM events. You can set string properties by calling the `setExtraProperty()` method. Note that you can set more than one extra property by calling this method multiple times. Once set, these properties will be stored and attached to every RUM events. You can call the `eraseExtraProperty()` to erase one property.
 
@@ -136,7 +149,7 @@ The SDK traces following KPI events automatically:
 - new_user
 - payment
 
-**Trace custom events**
+#### Trace custom events
 
 ```swift
 FunPlusSDK.getFunPlusData().traceCustom(event)
@@ -165,7 +178,7 @@ The event you're passing in to this method is a dictionary. Below is an example:
     }
 ```
 
-**Set extra properties to Data events**
+#### Set extra properties to Data events
 
 ```java
 FunPlusSDK.getFunPlusData().setExtraProperty(key: "{key}", value: "{value}");
@@ -177,3 +190,17 @@ FunPlusSDK.getFunPlusData().eraseExtraProperty(key: "{key}");
 **Q: Why the hell is the parameter list of  `TraceServiceMonitoring()` so long?**
 
 A: Please consult RUM team on that :)
+
+**Q: What is `bindFPID()` for and when should I use it?**
+
+A: In most cases you are not gonna use this method. For cases that one player binds his/her game account to different social accounts, you need to call this method.
+
+Below is an example:
+
+```swift
+let fpid = FunPlusSDK.getFunPlusID().getFPID("testuser@funplus.com", ExternalIDType.email, ...);
+
+// When player binds his/her account with Facebook.
+FunPlusSDK.getFunPlusID().bindFPID(fpid, "fb1234", ExternalIDType.facebookID, ...);
+```
+
