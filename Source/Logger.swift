@@ -24,6 +24,8 @@ class Logger {
     
     // MARK: - Properties
     
+    static let MAX_QUEUE_SIZE = 1024
+    
     let funPlusConfig: FunPlusConfig
     let logLevel: LogLevel
     var logs = [String]()
@@ -85,6 +87,9 @@ class Logger {
         
         let entry = buildLogEntry(logLevelString: logLevelString, log: log, callStackSymbols: callStackSymbols)
         objc_sync_enter(self)
+        if (logs.count > Logger.MAX_QUEUE_SIZE) {
+            logs.removeFirst()
+        }
         logs.append(entry.description)
         objc_sync_exit(self)
     }

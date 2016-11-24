@@ -21,7 +21,7 @@ class LoggerDataConsumer {
     let logAgentClient: LogAgentClient
     
     var timer: Timer?
-    let interval = 30.0
+    let interval = 60.0
     let label = "com.funplus.sdk.Logger"
     
     // MARK: - Init & Deinit
