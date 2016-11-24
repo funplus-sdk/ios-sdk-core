@@ -51,8 +51,8 @@ class PassportClient {
      */
     func get(externalID: String, externalIDType: ExternalIDType, completion: @escaping (FunPlusIDResult) -> Void) {
         let params = [
-            "method":               "get",
-            "game_id":               funPlusConfig.appId,
+            "method":        "get",
+            "game_id":       funPlusConfig.appId,
             "guid":          externalID,
             "guid_type":     externalIDType.rawValue
         ]
@@ -69,9 +69,9 @@ class PassportClient {
      */
     func bind(fpid: String, externalID: String, externalIDType: ExternalIDType, completion: @escaping (FunPlusIDResult) -> Void) {
         let params = [
-            "method":               "bind",
-            "game_id":               funPlusConfig.appId,
-            "fpid":                 fpid,
+            "method":        "bind",
+            "game_id":       funPlusConfig.appId,
+            "fpid":          fpid,
             "guid":          externalID,
             "guid_type":     externalIDType.rawValue
         ]
