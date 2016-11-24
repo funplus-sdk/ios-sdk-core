@@ -44,15 +44,13 @@ import FunPlusSDK
 
 let APP_ID = "test"
 let APP_KEY = "funplus"
+let RUM_TAG = "{YourRumTag}"
+let RUM_KEY = "{YourRumKey}"
 let ENV = SDKEnvironment.sandbox	// sandbox/production
 
 func application(_ application: UIApplication, didFinishLaunchingWithOptions
 	launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-	do {
-        try FunPlusSDK.install(appId: APP_ID, appKey: APP_KEY, environment: ENV)
-    } catch {
-        // Something is wrong?!!
-    }
+    FunPlusSDK.install(appId: APP_ID, appKey: APP_KEY, rumTag: RUM_TAG, rumKey: RUM_KEY, environment: ENV)
 }
 ```
 
@@ -174,7 +172,7 @@ The event you're passing in to this method is a dictionary. Below is an example:
         "device": "{DeviceName}",
         "lang": "{LanguageCode, for example: 'en'}",
         "install_ts": "{Timestamp(millisecond)}",
-        // Other custom properties.
+        "other_properties": "..."
     }
 ```
 

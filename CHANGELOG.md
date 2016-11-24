@@ -1,5 +1,11 @@
 # Changelog
 
+### v4.0.3
+
+* Increase SDK logs uploading interval.
+* Set maximum queue size for SDK logs.
+* Disable debug queues.
+
 ### v4.0.3-alpha.2
 
 * Remove `currencyReceivedType` from payment events.
