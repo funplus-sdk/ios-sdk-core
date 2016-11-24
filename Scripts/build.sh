@@ -34,15 +34,17 @@ cp {README,CHANGELOG}.md $out/
 xcodebuild -target FunPlusSDK -configuration Release -sdk iphoneos
 
 # build simulator SDK
-xcodebuild -target FunPlusSDK -configuration Release -sdk iphonesimulator
+#xcodebuild -target FunPlusSDK -configuration Release -sdk iphonesimulator
 
-build_dir=Build/Products
+build_dir=Build
 device_framework=$build_dir/Release-iphoneos/FunPlusSDK.framework
-simulator_framework=$build_dir/Release-iphonesimulator/FunPlusSDK.framework
-fat_framework=$build_dir/FunPlusSDK.framework
+#simulator_framework=$build_dir/Release-iphonesimulator/FunPlusSDK.framework
+#fat_framework=$build_dir/FunPlusSDK.framework
 
-lipo -create -output $build_dir/FunPlusSDK $device_framework/FunPlusSDK $simulator_framework/FunPlusSDK
-cp -R $device_framework $fat_framework
-mv $build_dir/FunPlusSDK $fat_framework/FunPlusSDK
-echo $ver > $fat_framework/VERSION
-cp -R $fat_framework $out/FunPlusSDK.framework
+#lipo -create -output $build_dir/FunPlusSDK $device_framework/FunPlusSDK $simulator_framework/FunPlusSDK
+#cp -R $device_framework $fat_framework
+#mv $build_dir/FunPlusSDK $fat_framework/FunPlusSDK
+#echo $ver > $fat_framework/VERSION
+#cp -R $fat_framework $out/FunPlusSDK.framework
+echo $ver > $device_framework/VERSION
+cp -R $device_framework $out/FunPlusSDK.framework
