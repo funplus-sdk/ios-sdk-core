@@ -141,6 +141,10 @@ class PassportClient {
                 
                 if fpid != self.currentFPID {
                     self.updateFPID(newFPID: fpid)
+                    
+                    if let isNew = data["is_new"] as? Bool, isNew {
+                        FunPlusFactory.getFunPlusData(funPlusConfig: self.funPlusConfig).traceNewUser()
+                    }
                 }
                 
                 //==============================================
