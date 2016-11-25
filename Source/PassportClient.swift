@@ -139,12 +139,23 @@ class PassportClient {
                     return
                 }
                 
+                if fpid != self.currentFPID {
+                    self.updateFPID(newFPID: fpid)
+                }
+                
                 //==============================================
                 //     Okay
                 //==============================================
                 self.getLogger().i("Passport response OK")
                 completion(.success(fpid: fpid))
         }
+    }
+    
+    func updateFPID(newFPID: String) {
+        currentFPID = newFPID
+        UserDefaults.standard.set(currentFPID, forKey: PropertyKeys.CurrentFPID)
+        
+        FunPlusFactory.getSessionManager(funPlusConfig: funPlusConfig).startSession(userId: currentFPID)
     }
     
     /**
