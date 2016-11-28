@@ -41,9 +41,6 @@ public class FunPlusRUM {
     var previousNetworkStatus: NetworkReachabilityManager.NetworkReachabilityStatus?
     
     var extraProperties: [String: String]
-    
-    var traceHistory = [(eventString: String, traceTime: Date)]()
-    var suppressHistory = [(eventString: String, traceTime: Date)]()
 
     // MARK: - Init & Deinit
     
@@ -95,27 +92,18 @@ public class FunPlusRUM {
     // MARK: - Trace
     
     func trace(_ event: [String: Any]) {
-        guard let jsonData = try? JSONSerialization.data(withJSONObject: event, options: []) else {
-            return
-        }
-        
-        guard let jsonString = NSString(data: jsonData, encoding: String.Encoding.utf8.rawValue) as? String else {
-            return
-        }
-        
-        if sampler.shouldSendEvent(event) {
-            logAgentClient.trace(jsonString)
-            getLogger().i("Trace RUM event: \(jsonString)")
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: event, options: [])
             
-//            #if DEBUG
-//            traceHistory.append((eventString: jsonString, traceTime: Date()))
-//            #endif
-        } else {
-            getLogger().i("Suppress RUM event: \(event)")
-            
-//            #if DEBUG
-//            suppressHistory.append((eventString: jsonString, traceTime: Date()))
-//            #endif
+            guard let jsonString = String(data: jsonData, encoding: String.Encoding.utf8) else {
+                return
+            }
+        
+            if sampler.shouldSendEvent(event) {
+                logAgentClient.trace(jsonString)
+            }
+        } catch {
+            // TODO
         }
     }
     
