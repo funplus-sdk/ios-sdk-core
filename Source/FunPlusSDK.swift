@@ -18,7 +18,7 @@ public enum FunPlusSDKError: Error {
 
 public class FunPlusSDK {
     
-    public static let VERSION = "4.0.3"
+    public static let VERSION = "4.0.4-alpha.0"
     
     static var instance: FunPlusSDK?
     
