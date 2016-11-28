@@ -92,6 +92,10 @@ public class FunPlusRUM {
     // MARK: - Trace
     
     func trace(_ event: [String: Any]) {
+        guard !logAgentClient.isBusy() else {
+            return
+        }
+        
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: event, options: [])
             

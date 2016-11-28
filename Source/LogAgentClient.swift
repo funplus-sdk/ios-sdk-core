@@ -108,6 +108,10 @@ class LogAgentClient {
         unregisterNotificationObservers()
     }
     
+    func isBusy() -> Bool {
+        return dataQueue.count >= LogAgentClient.MAX_QUEUE_SIZE
+    }
+    
     // MARK: - Trace & Upload & Archive
     
     func trace(_ entry: String) {
