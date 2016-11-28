@@ -26,7 +26,7 @@ class LogAgentClient {
     
     // MARK: - Properties
     
-    static let MAX_QUEUE_SIZE = 1024
+    static let MAX_QUEUE_SIZE = 5000
     
     let funPlusConfig: FunPlusConfig
     
@@ -111,8 +111,8 @@ class LogAgentClient {
     // MARK: - Trace & Upload & Archive
     
     func trace(_ entry: String) {
-        serialQueue.async {
-            if (self.dataQueue.count > LogAgentClient.MAX_QUEUE_SIZE) {
+        serialQueue.sync {
+            if (self.dataQueue.count >= LogAgentClient.MAX_QUEUE_SIZE) {
                 self.dataQueue.removeFirst()
             }
             self.dataQueue.append(entry)
@@ -126,13 +126,13 @@ class LogAgentClient {
     }
     
     func upload() {
-        serialQueue.async {
+        serialQueue.sync {
             guard !self.isUploading && !self.isOffline && self.dataQueue.count > 0 else { return }
             
             self.isUploading = true
             
             self.uploader.upload(self.dataQueue, completion: { (status, total, uploaded) in
-                self.serialQueue.async(execute: {
+                self.serialQueue.sync(execute: {
                     self.dataQueue.removeSubrange(0..<uploaded)
                     self.progress?(status, total, uploaded)
                     self.isUploading = false
@@ -197,7 +197,7 @@ class LogAgentClient {
         
         executeBackgroundTask()
         
-        serialQueue.async {
+        serialQueue.sync {
             if let backgroundTaskId = self.backgroundTaskId {
                 app.endBackgroundTask(backgroundTaskId)
                 self.backgroundTaskId = UIBackgroundTaskInvalid
@@ -210,7 +210,7 @@ class LogAgentClient {
     @objc func appWillEnterForeground() {
         let app = UIApplication.shared
         
-        serialQueue.async {
+        serialQueue.sync {
             if let backgroundTaskId = self.backgroundTaskId {
                 app.endBackgroundTask(backgroundTaskId)
                 self.backgroundTaskId = UIBackgroundTaskInvalid
