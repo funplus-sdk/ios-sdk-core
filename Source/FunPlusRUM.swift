@@ -107,15 +107,15 @@ public class FunPlusRUM {
             logAgentClient.trace(jsonString)
             getLogger().i("Trace RUM event: \(jsonString)")
             
-//            #if DEBUG
-//            traceHistory.append((eventString: jsonString, traceTime: Date()))
-//            #endif
+            #if DEBUG
+            traceHistory.append((eventString: jsonString, traceTime: Date()))
+            #endif
         } else {
             getLogger().i("Suppress RUM event: \(event)")
             
-//            #if DEBUG
-//            suppressHistory.append((eventString: jsonString, traceTime: Date()))
-//            #endif
+            #if DEBUG
+            suppressHistory.append((eventString: jsonString, traceTime: Date()))
+            #endif
         }
     }
     

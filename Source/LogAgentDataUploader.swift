@@ -41,16 +41,6 @@ class LogAgentDataUploader {
     /// The FunPlus Log Agent key.
     let key: String
     
-    /// The uploading history.
-    var uploadHistory = [
-        (status: Bool, total: Int, uploaded: Int, batch: Int, start: Date, duration: TimeInterval)
-    ]()
-    
-    /// The requests history.
-    var requestHistory = [
-        (status: Bool, request: URLRequest, response: URLResponse, timeline: Timeline)
-    ]()
-    
     // MARK: - Init
     
     init(funPlusConfig: FunPlusConfig, endpoint: String, tag: String, key: String) {
@@ -94,25 +84,8 @@ class LogAgentDataUploader {
             let url = "\(self.endpoint)?tag=\(self.tag)&timestamp=\(timestamp)&num=\(batchSize)&signature=\(sig)"
             let requestBody = batch.joined(separator: "\n").data(using: String.Encoding.utf8)
             
-            let startTime = Date()
-            
             RequestSessionManager.default.upload(requestBody!, to: url).responseString { res in
-                if let request = res.request, let response = res.response {
-                    self.requestHistory.append(
-                        (res.response?.statusCode == 200, request, response, res.timeline)
-                    )
-                }
-                
                 guard res.response?.statusCode == 200 && res.result.value == "OK" else {
-                    self.uploadHistory.append((
-                        status: true,
-                        total: total,
-                        uploaded: uploaded,
-                        batch: batchSize,
-                        start: startTime,
-                        duration: NSDate().timeIntervalSince(startTime)
-                    ))
-                    
                     completion(total == uploaded, total, uploaded)
                     print("[FunPlusSDK] Upload failed, total: \(total), uploaded: \(uploaded), batch: \(batchSize)")
                     
@@ -121,14 +94,6 @@ class LogAgentDataUploader {
                 }
                 
                 uploaded += batchSize
-                self.uploadHistory.append((
-                    status: true,
-                    total: total,
-                    uploaded: uploaded,
-                    batch: batchSize,
-                    start: startTime,
-                    duration: NSDate().timeIntervalSince(startTime)
-                ))
                 
                 print("[FunPlusSDK] Upload success, total: \(total), uploaded: \(uploaded), batch: \(batchSize)")
                 
