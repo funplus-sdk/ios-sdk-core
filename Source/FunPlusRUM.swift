@@ -41,6 +41,9 @@ public class FunPlusRUM {
     var previousNetworkStatus: NetworkReachabilityManager.NetworkReachabilityStatus?
     
     var extraProperties: [String: String]
+    
+    var traceHistory = [(eventString: String, traceTime: Date)]()
+    var suppressHistory = [(eventString: String, traceTime: Date)]()
 
     // MARK: - Init & Deinit
     
@@ -105,6 +108,16 @@ public class FunPlusRUM {
         
             if sampler.shouldSendEvent(event) {
                 logAgentClient.trace(jsonString)
+                
+                #if DEBUG
+                traceHistory.append((eventString: jsonString, traceTime: Date()))
+                #endif
+            } else {
+                getLogger().i("Suppress RUM event: \(event)")
+                    
+                #if DEBUG
+                suppressHistory.append((eventString: jsonString, traceTime: Date()))
+                #endif
             }
         } catch {
             // TODO

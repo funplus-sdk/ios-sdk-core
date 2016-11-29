@@ -115,12 +115,20 @@ public class FunPlusData: SessionStatusChangeListener {
         case .kpi:
             kpiLogAgentClient.trace(jsonString)
             
+            #if DEBUG
+            kpiTraceHistory.append(eventString: jsonString, traceTime: Date())
+            #endif
+            
             // Publish this event.
             for listener in listeners {
                 listener.kpiEventTraced(event: event)
             }
         case .custom:
             customLogAgentClient.trace(jsonString)
+            
+            #if DEBUG
+            customTraceHistory.append(eventString: jsonString, traceTime: Date())
+            #endif
             
             // Publish this event.
             for listener in listeners {
