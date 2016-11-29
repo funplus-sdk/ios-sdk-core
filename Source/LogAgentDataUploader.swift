@@ -71,7 +71,6 @@ class LogAgentDataUploader {
             // Upload completes? Return.
             guard total > uploaded else {
                 completion(total == uploaded, total, uploaded)
-                print("[FunPlusSDK] Upload complete, total: \(total), uploaded: \(uploaded)")
                 return
             }
             
@@ -87,15 +86,12 @@ class LogAgentDataUploader {
             RequestSessionManager.default.upload(requestBody!, to: url).responseString { res in
                 guard res.response?.statusCode == 200 && res.result.value == "OK" else {
                     completion(total == uploaded, total, uploaded)
-                    print("[FunPlusSDK] Upload failed, total: \(total), uploaded: \(uploaded), batch: \(batchSize)")
                     
                     // Break.
                     return
                 }
                 
                 uploaded += batchSize
-                
-                print("[FunPlusSDK] Upload success, total: \(total), uploaded: \(uploaded), batch: \(batchSize)")
                 
                 // Continue.
                 closure()
