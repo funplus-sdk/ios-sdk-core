@@ -76,7 +76,7 @@ class LogAgentDataUploader {
             }
             
             // Batch size must not exceed MAX_BATCH_SIZE.
-            let batchSize = (total - uploaded > self.MAX_BATCH_SIZE) ? self.MAX_BATCH_SIZE : total - uploaded
+            let batchSize = min(total - uploaded, self.MAX_BATCH_SIZE)
             let batch = Array(data[0..<batchSize])
             
             let timestamp = Int64(Date().timeIntervalSince1970 * 1000)
