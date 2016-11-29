@@ -97,12 +97,15 @@ class LogAgentDataUploader {
             
             RequestSessionManager.default.upload(requestBody!, to: url).responseString { res in
                 if let request = res.request, let response = res.response {
+                    #if DEBUG
                     self.requestHistory.append(
                         (res.response?.statusCode == 200, request, response, res.timeline)
                     )
+                    #endif
                 }
                 
                 guard res.response?.statusCode == 200 && res.result.value == "OK" else {
+                    #if DEBUG
                     self.uploadHistory.append((
                         status: true,
                         total: total,
@@ -111,6 +114,7 @@ class LogAgentDataUploader {
                         start: startTime,
                         duration: NSDate().timeIntervalSince(startTime)
                     ))
+                    #endif
                     
                     completion(total == uploaded, total, uploaded)
                     
@@ -120,6 +124,7 @@ class LogAgentDataUploader {
                 
                 uploaded += batchSize
                 
+                #if DEBUG
                 self.uploadHistory.append((
                     status: true,
                     total: total,
@@ -128,6 +133,7 @@ class LogAgentDataUploader {
                     start: startTime,
                     duration: NSDate().timeIntervalSince(startTime)
                 ))
+                #endif
                 
                 // Continue.
                 closure()
