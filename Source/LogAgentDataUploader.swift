@@ -8,15 +8,6 @@
 
 import Foundation
 
-// MARK: - CompletionHandler
-
-/**
-    The `CompletionHandler` is used as callback function when uploading finishes.
- 
-    - parameter uploaded:   The count of logs uploaded.
- */
-typealias CompletionHandler = (_ uploaded: Int) -> Void
-
 // MARK: - LogAgentDataUploader
 
 /// See http://wiki.ifunplus.cn/display/core/http+log+agent+API
@@ -56,7 +47,7 @@ class LogAgentDataUploader {
         - parameter data:       The data set to be uploaded.
         - parameter completion: The completion callback.
      */
-    func upload(data: [String], completion: @escaping CompletionHandler) {
+    func upload(data: [String], completion: @escaping (Int) -> Void) {
         let total = data.count
         
         guard total > 0 else {
@@ -94,7 +85,7 @@ class LogAgentDataUploader {
      - parameter data:       The data set to be uploaded.
      - parameter completion: The completion callback.
      */
-    func upload(data: [[String: Any]], completion: @escaping CompletionHandler) {
+    func upload(data: [[String: Any]], completion: @escaping (Int) -> Void) {
         let total = data.count
         
         guard total > 0 else {
