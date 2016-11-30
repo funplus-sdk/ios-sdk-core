@@ -20,7 +20,7 @@ class LogAgentDataUploaderTests: XCTestCase {
     
     func testUpload() {
         // Given
-        let testCount = 1024
+        let testCount = 100
         let uploader = LogAgentDataUploader(funPlusConfig: funPlusConfig, endpoint: ENDPOINT, tag: TAG, key: KEY)
         
         var dataQueue = [String]()
@@ -31,14 +31,10 @@ class LogAgentDataUploaderTests: XCTestCase {
         
         let ex = expectation(description: "\(uploader)")
         
-        var resultStatus: Bool!
-        var resultTotal: Int!
         var resultUploaded: Int!
         
         // When
-        uploader.upload(dataQueue) { (status, total, uploaded) in
-            resultStatus = status
-            resultTotal = total
+        uploader.upload(data: dataQueue) { (uploaded) in
             resultUploaded = uploaded
             
             ex.fulfill()
@@ -47,8 +43,6 @@ class LogAgentDataUploaderTests: XCTestCase {
         waitForExpectations(timeout: TIMEOUT, handler: nil)
         
         // Then
-        XCTAssertTrue(resultStatus, "status should be true")
-        XCTAssertEqual(resultTotal, testCount, "total should be \(testCount)")
         XCTAssertEqual(resultUploaded, testCount, "uploaded should be \(testCount)")
     }
     
@@ -65,14 +59,10 @@ class LogAgentDataUploaderTests: XCTestCase {
         
         let ex = expectation(description: "\(uploader)")
         
-        var resultStatus: Bool!
-        var resultTotal: Int!
         var resultUploaded: Int!
         
         // When
-        uploader.upload(dataQueue) { (status, total, uploaded) in
-            resultStatus = status
-            resultTotal = total
+        uploader.upload(data: dataQueue) { (uploaded) in
             resultUploaded = uploaded
             
             ex.fulfill()
@@ -81,8 +71,6 @@ class LogAgentDataUploaderTests: XCTestCase {
         waitForExpectations(timeout: TIMEOUT, handler: nil)
         
         // Then
-        XCTAssertFalse(resultStatus, "status should be false")
-        XCTAssertEqual(resultTotal, testCount, "total should be \(testCount)")
         XCTAssertEqual(resultUploaded, 0, "uploaded should be 0")
     }
 
@@ -99,14 +87,10 @@ class LogAgentDataUploaderTests: XCTestCase {
         
         let ex = expectation(description: "\(uploader)")
         
-        var resultStatus: Bool!
-        var resultTotal: Int!
         var resultUploaded: Int!
         
         // When
-        uploader.upload(dataQueue) { (status, total, uploaded) in
-            resultStatus = status
-            resultTotal = total
+        uploader.upload(data: dataQueue) { (uploaded) in
             resultUploaded = uploaded
             
             ex.fulfill()
@@ -115,8 +99,6 @@ class LogAgentDataUploaderTests: XCTestCase {
         waitForExpectations(timeout: TIMEOUT, handler: nil)
         
         // Then
-        XCTAssertFalse(resultStatus, "status should be false")
-        XCTAssertEqual(resultTotal, testCount, "total should be \(testCount)")
         XCTAssertEqual(resultUploaded, 0, "uploaded should be 0")
     }
 }

@@ -131,10 +131,10 @@ class LogAgentClient {
             
             self.isUploading = true
             
-            self.uploader.upload(self.dataQueue, completion: { (status, total, uploaded) in
+            self.uploader.upload(data: self.dataQueue, completion: { (uploaded) in
                 self.serialQueue.async(execute: {
                     self.dataQueue.removeSubrange(0..<uploaded)
-                    self.progress?(status, total, uploaded)
+//                    self.progress?(status, total, uploaded)
                     self.isUploading = false
                 })
             })

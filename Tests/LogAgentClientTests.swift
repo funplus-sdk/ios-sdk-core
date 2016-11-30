@@ -47,7 +47,7 @@ class LogAgentClientTests: XCTestCase {
 
     func testTraceWithUploader() {
         // Given
-        let testCount = 512
+        let testCount = 100
         let logger = LogAgentClient(funPlusConfig: funPlusConfig, label: LABEL, endpoint: ENDPOINT, tag: TAG, key: KEY)
         let ex = expectation(description: "\(logger)")
         
@@ -72,7 +72,7 @@ class LogAgentClientTests: XCTestCase {
 
     func testTimedUpload() {
         // Given
-        let testCount = 512
+        let testCount = 100
         let logger = LogAgentClient(funPlusConfig: funPlusConfig, label: LABEL, endpoint: ENDPOINT, tag: TAG, key: KEY, uploadInterval: 2.0)
         let ex = expectation(description: "\(logger)")
         
@@ -93,7 +93,7 @@ class LogAgentClientTests: XCTestCase {
  
     func testTimedUploadWhileTracing() {
         // Given
-        let testCount = 512
+        let testCount = 100
         let logger = LogAgentClient(funPlusConfig: funPlusConfig, label: LABEL, endpoint: ENDPOINT, tag: TAG, key: KEY, uploadInterval: 2.0)
         let ex = expectation(description: "\(logger)")
         
@@ -240,7 +240,7 @@ class LogAgentClientTests: XCTestCase {
     
     func testAppDidEnterBackground() {
         // Given
-        let testCount = 512
+        let testCount = 100
         let logger = LogAgentClient(funPlusConfig: funPlusConfig, label: LABEL, endpoint: ENDPOINT, tag: TAG, key: KEY, uploadInterval: 0.0)
         let ex = expectation(description: "\(logger)")
         
