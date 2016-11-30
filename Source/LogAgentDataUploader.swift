@@ -103,7 +103,7 @@ class LogAgentDataUploader {
         request.httpMethod = "post"
         request.httpBody = data
         
-        let session = URLSession(configuration: URLSessionConfiguration.default)
+        let session = URLSession.shared
         session.uploadTask(with: request, from: data) { (data, res, error) -> Void in
             guard let res = res as? HTTPURLResponse, res.statusCode == 200 else {
                 completion(false)
@@ -118,7 +118,5 @@ class LogAgentDataUploader {
             completion(true)
             session.reset {}
         }.resume()
-        
-        session.finishTasksAndInvalidate()
     }
 }
