@@ -47,7 +47,7 @@ class LogAgentDataUploader {
         - parameter data:       The data set to be uploaded.
         - parameter completion: The completion callback.
      */
-    func upload(data: [String], completion: @escaping (Int) -> Void) {
+    func upload(data: inout [[String: Any]], completion: @escaping (Int) -> Void) {
         let total = data.count
         
         guard total > 0 else {
@@ -56,65 +56,69 @@ class LogAgentDataUploader {
         }
         
         // Batch size must not exceed MAX_BATCH_SIZE.
-        let batchSize = min(total, self.MAX_BATCH_SIZE)
-        let batch = Array(data[0..<batchSize])
+        let batchSize = min(total, MAX_BATCH_SIZE)
+        let subArray = Array(data[0..<batchSize])
+        let batch = subArray.map { item -> String in
+            do {
+                let data = try JSONSerialization.data(withJSONObject: item, options: [])
+                if let json = String(data: data, encoding: String.Encoding.utf8) {
+                    return json
+                } else {
+                    return ""
+                }
+            } catch {
+                return ""
+            }
+        }
         
         let timestamp = Int64(Date().timeIntervalSince1970 * 1000)
         let sig = "\(self.tag):\(timestamp):\(self.key)".md5()
         let url = "\(self.endpoint)?tag=\(self.tag)&timestamp=\(timestamp)&num=\(batchSize)&signature=\(sig)"
         let requestBody = batch.joined(separator: "\n").data(using: String.Encoding.utf8)
-        
-        RequestSessionManager.default.upload(requestBody!, to: url).responseString { res in
-            guard res.response?.statusCode == 200 && res.result.value == "OK" else {
-                print("[FunPlusSDK] Upload failed")
-                completion(0)
-                
-                // Break.
-                return
-            }
-            
-            print("[FunPlusSDK] Upload success, uploaded: \(batchSize)")
-            completion(batchSize)
+
+        LogAgentDataUploader.request(url: url, data: requestBody!) { status in
+            completion(status ? batchSize : 0)
         }
     }
     
     /**
-     Upload a given set of data to endpoint. When the uploading progress completes
-     (either succeeds or fails), a completion callback will be called.
+        Submit a request.
      
-     - parameter data:       The data set to be uploaded.
-     - parameter completion: The completion callback.
+        - parameter url:    The URL to request to.
+        - parameter data:   The data to be attached in request body.
+        - completion:       The completion callback with one parameter
+                            indication the request status.
      */
-    func upload(data: [[String: Any]], completion: @escaping (Int) -> Void) {
-        let total = data.count
-        
-        guard total > 0 else {
-            completion(0)
+    private class func request(
+        url: String,
+        data: Data,
+        completion: @escaping (_ status: Bool) -> ())
+    {
+        guard let url = URL(string: url) else {
+            completion(false)
             return
         }
         
-        // Batch size must not exceed MAX_BATCH_SIZE.
-        let batchSize = min(total, self.MAX_BATCH_SIZE)
-        let batch = Array(data[0..<batchSize])
+        var request = URLRequest(url: url)
+        request.httpMethod = "post"
+        request.httpBody = data
         
-        print(batch)
+        let session = URLSession(configuration: URLSessionConfiguration.default)
+        session.uploadTask(with: request, from: data) { (data, res, error) -> Void in
+            guard let res = res as? HTTPURLResponse, res.statusCode == 200 else {
+                completion(false)
+                return
+            }
+            
+            guard let data = data, String(data: data, encoding: String.Encoding.utf8) == "OK" else {
+                completion(false)
+                return
+            }
+            
+            completion(true)
+            session.reset {}
+        }.resume()
         
-//        let timestamp = Int64(Date().timeIntervalSince1970 * 1000)
-//        let sig = "\(self.tag):\(timestamp):\(self.key)".md5()
-//        let url = "\(self.endpoint)?tag=\(self.tag)&timestamp=\(timestamp)&num=\(batchSize)&signature=\(sig)"
-//        let requestBody = batch.joined(separator: "\n").data(using: String.Encoding.utf8)
-//        
-//        RequestSessionManager.default.upload(requestBody!, to: url).responseString { res in
-//            guard res.response?.statusCode == 200 && res.result.value == "OK" else {
-//                print("[FunPlusSDK] Upload failed")
-//                completion(0)
-//                
-//                // Break.
-//                return
-//            }
-//            
-//            print("[FunPlusSDK] Upload success, uploaded: \(batchSize)")
-//            completion(batchSize)
-//        }
+        session.finishTasksAndInvalidate()
     }
 }

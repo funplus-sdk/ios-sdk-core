@@ -103,20 +103,12 @@ public class FunPlusData: SessionStatusChangeListener {
     // MARK: - Trace
     
     func trace(eventType: DataEventType, event: [String: Any]) {
-        guard let jsonData = try? JSONSerialization.data(withJSONObject: event, options: []) else {
-            return
-        }
-        
-        guard let jsonString = NSString(data: jsonData, encoding: String.Encoding.utf8.rawValue) as? String else {
-            return
-        }
-        
         switch eventType {
         case .kpi:
-            kpiLogAgentClient.trace(jsonString)
+            kpiLogAgentClient.trace(entry: event)
             
             #if DEBUG
-            kpiTraceHistory.append(eventString: jsonString, traceTime: Date())
+            kpiTraceHistory.append(eventString: event.description, traceTime: Date())
             #endif
             
             // Publish this event.
@@ -124,10 +116,10 @@ public class FunPlusData: SessionStatusChangeListener {
                 listener.kpiEventTraced(event: event)
             }
         case .custom:
-            customLogAgentClient.trace(jsonString)
+            customLogAgentClient.trace(entry: event)
             
             #if DEBUG
-            customTraceHistory.append(eventString: jsonString, traceTime: Date())
+            customTraceHistory.append(eventString: event.description, traceTime: Date())
             #endif
             
             // Publish this event.
@@ -136,7 +128,7 @@ public class FunPlusData: SessionStatusChangeListener {
             }
         }
         
-        getLogger().i("Trace Data event: \(jsonString)")
+        getLogger().i("Trace Data event: \(event)")
     }
     
     public func traceCustom(event: [String: Any]) {

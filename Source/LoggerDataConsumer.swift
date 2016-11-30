@@ -51,7 +51,7 @@ class LoggerDataConsumer {
     }
     
     @objc func consume() {
-        logAgentClient.trace(FunPlusFactory.getLogger(funPlusConfig: funPlusConfig).consumeLogs())
+        logAgentClient.trace(entries: FunPlusFactory.getLogger(funPlusConfig: funPlusConfig).consumeLogs())
     }
     
     func startTimer() {

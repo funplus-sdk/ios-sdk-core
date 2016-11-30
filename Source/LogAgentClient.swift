@@ -37,7 +37,7 @@ class LogAgentClient {
     let uploader: LogAgentDataUploader
     
     /// The data container used to cache all incoming data. It is actually a mutable string array.
-    var dataQueue: [String]
+    var dataQueue: [[String: Any]]
     
      /// The serial operation queue.
     let serialQueue: DispatchQueue
@@ -91,7 +91,7 @@ class LogAgentClient {
         }()
         
         // Unarchive local stored data.
-        dataQueue = NSKeyedUnarchiver.unarchiveObject(withFile: archiveFilePath) as? [String] ?? []
+        dataQueue = NSKeyedUnarchiver.unarchiveObject(withFile: archiveFilePath) as? [[String: Any]] ?? []
         // Clear local stored data.
         NSKeyedArchiver.archiveRootObject([], toFile: archiveFilePath)
         
@@ -110,34 +110,34 @@ class LogAgentClient {
     
     // MARK: - Trace & Upload & Archive
     
-    func trace(_ entry: String) {
-        serialQueue.async {
-            if (self.dataQueue.count > LogAgentClient.MAX_QUEUE_SIZE) {
-                self.dataQueue.removeFirst()
+    func trace(entry: [String: Any]) {
+        serialQueue.sync {
+            if (self.dataQueue.count >= LogAgentClient.MAX_QUEUE_SIZE) {
+                self.dataQueue.remove(at: 0)
             }
             self.dataQueue.append(entry)
         }
     }
     
-    func trace(_ entries: [String]) {
+    func trace(entries: [[String: Any]]) {
         for entry in entries {
-            trace(entry)
+            trace(entry: entry)
         }
     }
     
     func upload() {
-        serialQueue.async {
+        serialQueue.sync {
             guard !self.isUploading && !self.isOffline && self.dataQueue.count > 0 else { return }
             
             self.isUploading = true
             
-            self.uploader.upload(data: self.dataQueue, completion: { (uploaded) in
-                self.serialQueue.async(execute: {
+            self.uploader.upload(data: &self.dataQueue) { [unowned self] uploaded in
+                self.serialQueue.sync(execute: {
                     self.dataQueue.removeSubrange(0..<uploaded)
-//                    self.progress?(status, total, uploaded)
                     self.isUploading = false
+//                    self.progress?(status, total, uploaded)
                 })
-            })
+            }
         }
     }
     
@@ -159,16 +159,26 @@ class LogAgentClient {
     
     func startTimer() {
         // If `uploadInterval` is 0.0, do not start the timer.
-        if timer == nil && uploadInterval > 0.0 {
-            timer = Timer.scheduledTimer(timeInterval: uploadInterval, target: self, selector: #selector(timedUpload), userInfo: nil, repeats: true)
+        guard timer == nil, uploadInterval > 0.0 else {
+            return
         }
+        
+        timer = Timer.scheduledTimer(
+            timeInterval: uploadInterval,
+            target: self,
+            selector: #selector(timedUpload),
+            userInfo: nil,
+            repeats: true
+        )
     }
     
     func stopTimer() {
-        if timer != nil {
-            timer?.invalidate()
-            timer = nil
+        guard timer != nil else {
+            return
         }
+        
+        timer!.invalidate()
+        timer = nil
     }
     
     // MARK: - App Life Cycle
@@ -197,7 +207,7 @@ class LogAgentClient {
         
         executeBackgroundTask()
         
-        serialQueue.async {
+        serialQueue.sync {
             if let backgroundTaskId = self.backgroundTaskId {
                 app.endBackgroundTask(backgroundTaskId)
                 self.backgroundTaskId = UIBackgroundTaskInvalid
@@ -210,7 +220,7 @@ class LogAgentClient {
     @objc func appWillEnterForeground() {
         let app = UIApplication.shared
         
-        serialQueue.async {
+        serialQueue.sync {
             if let backgroundTaskId = self.backgroundTaskId {
                 app.endBackgroundTask(backgroundTaskId)
                 self.backgroundTaskId = UIBackgroundTaskInvalid
