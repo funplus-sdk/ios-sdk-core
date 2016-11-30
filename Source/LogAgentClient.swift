@@ -37,7 +37,7 @@ class LogAgentClient {
     let uploader: LogAgentDataUploader
     
     /// The data container used to cache all incoming data. It is actually a mutable string array.
-    var dataQueue: [[String: Any]]
+    var dataQueue = [[String: Any]]()
     
      /// The serial operation queue.
     let serialQueue: DispatchQueue
@@ -85,13 +85,13 @@ class LogAgentClient {
         
         serialQueue = DispatchQueue(label: label, attributes: [])
         archiveFilePath = {
-            let filename = "logger-archive-\(label).plist"
+            let filename = "logger-archive-\(label).json"
             let libraryDirectory = FileManager().urls(for: .libraryDirectory, in: .userDomainMask).last!
             return libraryDirectory.appendingPathComponent(filename).path
         }()
         
         // Unarchive local stored data.
-        dataQueue = NSKeyedUnarchiver.unarchiveObject(withFile: archiveFilePath) as? [[String: Any]] ?? []
+        dataQueue = unarchive() ?? []
         // Clear local stored data.
         NSKeyedArchiver.archiveRootObject([], toFile: archiveFilePath)
         
@@ -142,12 +142,34 @@ class LogAgentClient {
     }
     
     func archive() {
-        if !self.dataQueue.isEmpty {
-            if NSKeyedArchiver.archiveRootObject(self.dataQueue, toFile: self.archiveFilePath) {
-                print("\(self.label): \(self.dataQueue.count) entries archived")
-            } else {
-                print("Failed to archive harvest data")
+        guard !dataQueue.isEmpty else {
+            return
+        }
+        
+        do {
+            let data = try JSONSerialization.data(withJSONObject: dataQueue, options: [])
+            if let json = String(data: data, encoding: .utf8) {
+                if NSKeyedArchiver.archiveRootObject(json, toFile: archiveFilePath) {
+                    print("\(label): \(dataQueue.count) entries archived")
+                }
             }
+        } catch {
+        }
+    }
+    
+    func unarchive() -> [[String: Any]]? {
+        guard let json = NSKeyedUnarchiver.unarchiveObject(withFile: archiveFilePath) as? String else {
+            return nil
+        }
+        
+        guard let data = json.data(using: .utf8) else {
+            return nil
+        }
+        
+        do {
+            return try JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]]
+        } catch {
+            return nil
         }
     }
     

@@ -23,10 +23,10 @@ class LogAgentDataUploaderTests: XCTestCase {
         let testCount = 100
         let uploader = LogAgentDataUploader(funPlusConfig: funPlusConfig, endpoint: ENDPOINT, tag: TAG, key: KEY)
         
-        var dataQueue = [String]()
+        var dataQueue = [[String: Any]]()
         
         for i in 1...testCount {
-            dataQueue.append("message_\(i)")
+            dataQueue.append(["message": "\(i)"])
         }
         
         let ex = expectation(description: "\(uploader)")
@@ -34,7 +34,7 @@ class LogAgentDataUploaderTests: XCTestCase {
         var resultUploaded: Int!
         
         // When
-        uploader.upload(data: dataQueue) { (uploaded) in
+        uploader.upload(data: &dataQueue) { (uploaded) in
             resultUploaded = uploaded
             
             ex.fulfill()
@@ -51,10 +51,10 @@ class LogAgentDataUploaderTests: XCTestCase {
         let testCount = 1024
         let uploader = LogAgentDataUploader(funPlusConfig: funPlusConfig, endpoint: ENDPOINT, tag: "badtag", key: "badkey")
         
-        var dataQueue = [String]()
+        var dataQueue = [[String: Any]]()
         
         for i in 1...testCount {
-            dataQueue.append("message_\(i)")
+            dataQueue.append(["message": "\(i)"])
         }
         
         let ex = expectation(description: "\(uploader)")
@@ -62,7 +62,7 @@ class LogAgentDataUploaderTests: XCTestCase {
         var resultUploaded: Int!
         
         // When
-        uploader.upload(data: dataQueue) { (uploaded) in
+        uploader.upload(data: &dataQueue) { (uploaded) in
             resultUploaded = uploaded
             
             ex.fulfill()
@@ -79,10 +79,10 @@ class LogAgentDataUploaderTests: XCTestCase {
         let testCount = 1024
         let uploader = LogAgentDataUploader(funPlusConfig: funPlusConfig, endpoint: "network.off", tag: TAG, key: KEY)
         
-        var dataQueue = [String]()
+        var dataQueue = [[String: Any]]()
         
         for i in 1...testCount {
-            dataQueue.append("message_\(i)")
+            dataQueue.append(["message": "\(i)"])
         }
         
         let ex = expectation(description: "\(uploader)")
@@ -90,7 +90,7 @@ class LogAgentDataUploaderTests: XCTestCase {
         var resultUploaded: Int!
         
         // When
-        uploader.upload(data: dataQueue) { (uploaded) in
+        uploader.upload(data: &dataQueue) { (uploaded) in
             resultUploaded = uploaded
             
             ex.fulfill()

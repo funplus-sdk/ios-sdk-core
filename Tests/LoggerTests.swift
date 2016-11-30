@@ -36,8 +36,8 @@ class LoggerTests: XCTestCase {
         
         // Then
         XCTAssertEqual(logger.logs.count, 1, "count should be 1")
-        XCTAssertTrue(logger.logs.first?.contains(message) ?? false, "log should contain \(message)")
-        XCTAssertTrue(logger.logs.first?.contains(logLevelString) ?? false, "log should contain \(logLevelString)")
+        XCTAssertTrue(logger.logs.first?.description.contains(message) ?? false, "log should contain \(message)")
+        XCTAssertTrue(logger.logs.first?.description.contains(logLevelString) ?? false, "log should contain \(logLevelString)")
     }
 
     func testTraceInfo() {
@@ -60,8 +60,8 @@ class LoggerTests: XCTestCase {
         
         // Then
         XCTAssertEqual(logger.logs.count, 1, "count should be 1")
-        XCTAssertTrue(logger.logs.first?.contains(message) ?? false, "log should contain \(message)")
-        XCTAssertTrue(logger.logs.first?.contains("INFO") ?? false, "log should contain INFO")
+        XCTAssertTrue(logger.logs.first?.description.contains(message) ?? false, "log should contain \(message)")
+        XCTAssertTrue(logger.logs.first?.description.contains("INFO") ?? false, "log should contain INFO")
     }
     
 
@@ -85,8 +85,8 @@ class LoggerTests: XCTestCase {
         
         // Then
         XCTAssertEqual(logger.logs.count, 1, "count should be 1")
-        XCTAssertTrue(logger.logs.first?.contains(message) ?? false, "log should contain \(message)")
-        XCTAssertTrue(logger.logs.first?.contains("WARN") ?? false, "log should contain WARN")
+        XCTAssertTrue(logger.logs.first?.description.contains(message) ?? false, "log should contain \(message)")
+        XCTAssertTrue(logger.logs.first?.description.contains("WARN") ?? false, "log should contain WARN")
     }
 
     func testTraceError() {
@@ -109,8 +109,8 @@ class LoggerTests: XCTestCase {
         
         // Then
         XCTAssertEqual(logger.logs.count, 1, "count should be 1")
-        XCTAssertTrue(logger.logs.first?.contains(message) ?? false, "log should contain \(message)")
-        XCTAssertTrue(logger.logs.first?.contains("ERROR") ?? false, "log should contain ERROR")
+        XCTAssertTrue(logger.logs.first?.description.contains(message) ?? false, "log should contain \(message)")
+        XCTAssertTrue(logger.logs.first?.description.contains("ERROR") ?? false, "log should contain ERROR")
     }
     
     func testTraceWtf() {
@@ -133,8 +133,8 @@ class LoggerTests: XCTestCase {
         
         // Then
         XCTAssertEqual(logger.logs.count, 1, "count should be 1")
-        XCTAssertTrue(logger.logs.first?.contains(message) ?? false, "log should contain \(message)")
-        XCTAssertTrue(logger.logs.first?.contains("FATAL") ?? false, "log should contain FATAL")
+        XCTAssertTrue(logger.logs.first?.description.contains(message) ?? false, "log should contain \(message)")
+        XCTAssertTrue(logger.logs.first?.description.contains("FATAL") ?? false, "log should contain FATAL")
     }
 
 
