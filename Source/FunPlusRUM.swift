@@ -10,6 +10,7 @@ import Foundation
 
 /// Extension to convert networt status to a string format that required by the RUM spec.
 extension NetworkReachabilityManager.NetworkReachabilityStatus {
+    
     var string: String {
         switch self {
         case .unknown: return "Unknown"
@@ -29,24 +30,50 @@ public class FunPlusRUM {
     
     // MARK: - Properties
     
+    /// Key used to save extra properties.
     static let EXTRA_PROPERTIES_SAVED_KEY = "com.funplus.sdk.ExtraRUMProperties"
     
+    /// The label for `LogAgentClient`, **should be globally unique**.
     let label = "com.funplus.sdk.FunPlusRUM"
+    
+    /// The configurations.
     let funPlusConfig: FunPlusConfig
+    
+    /// The `LogAgentClient` instance used to trace RUM events.
     let logAgentClient: LogAgentClient
+    
+    /// The sampler used to filter out events.
     let sampler: RUMSampler
     
+    /// Manager to indicate network reachability.
     var networkReachabilityManager: NetworkReachabilityManager?
+    
+    /// Current network status. Might be `nil`.
     var currentNetworkStatus: NetworkReachabilityManager.NetworkReachabilityStatus?
+    
+    /// Previous network status. Might be `nil`.
     var previousNetworkStatus: NetworkReachabilityManager.NetworkReachabilityStatus?
     
+    /// User-defined properties.
     var extraProperties: [String: String]
     
+    #if DEBUG
+    /// History of traced RUM events.
     var traceHistory = [(eventString: String, traceTime: Date)]()
+    
+    /// History of suppressed RUM events.
     var suppressHistory = [(eventString: String, traceTime: Date)]()
+    #endif
 
     // MARK: - Init & Deinit
     
+    /**
+        Create a new `FunPlusRUM` instance.
+     
+        - parameter funPlusConfig:  The configurations.
+     
+        - returns:  The created instance.
+     */
     init(funPlusConfig: FunPlusConfig) {
         self.funPlusConfig = funPlusConfig
         
@@ -94,16 +121,19 @@ public class FunPlusRUM {
     
     // MARK: - Trace
     
-    func trace(_ event: [String: Any]) {        
+    /**
+        Trace a RUM event.
+     
+        - parameter event:  The event dict to be traced.
+     */
+    func trace(event: [String: Any]) {
         if sampler.shouldSendEvent(event) {
             logAgentClient.trace(entry: event)
-//            getLogger().i("Trace RUM event: \(event)")
             
             #if DEBUG
             traceHistory.append((eventString: event.description, traceTime: Date()))
             #endif
         } else {
-//            getLogger().i("Suppress RUM event: \(event)")
             
             #if DEBUG
             suppressHistory.append((eventString: event.description, traceTime: Date()))
@@ -111,14 +141,26 @@ public class FunPlusRUM {
         }
     }
     
+    /**
+        Trace an `app_background` event.
+     */
     public func traceAppBackground() {
-        trace(buildRUMEvent(eventName: "app_background"))
+        trace(event: buildRUMEvent(eventName: "app_background"))
     }
     
+    /**
+        Trace an `app_foreground` event.
+     */
     public func traceAppForeground() {
-        trace(buildRUMEvent(eventName: "app_foreground"))
+        trace(event: buildRUMEvent(eventName: "app_foreground"))
     }
     
+    /**
+        Trace a `network_switch` event.
+     
+        - parameter sourceState:    The previous state being transfered from.
+        - parameter currentState:   The current state being transfered to.
+     */
     public func traceNetworkSwitch(sourceState: String, currentState: String) {
         let event = buildRUMEvent(
             eventName: "network_switch",
@@ -128,9 +170,23 @@ public class FunPlusRUM {
             ]
         )
         
-        trace(event)
+        trace(event: event)
     }
     
+    /**
+        Trace a `service_monitoring` event.
+     
+        - parameter serviceName:    The service name.
+        - parameter httpUrl:        The service's URL.
+        - parameter httpStatus:     Response status of the request.
+        - parameter requestSize:    Request size.
+        - parameter responseSize;   Response size.
+        - parameter httpLatency:    Request latency.
+        - parameter requestTs:      Timestamp when the request is being posted.
+        - parameter responseTs:     Timestamp when the response begins to be received.
+        - parameter targetUserId:   The target user ID.
+        - parameter gameServerId:   The game server ID.
+     */
     public func traceServiceMonitoring(
         serviceName: String,
         httpUrl: String,
@@ -161,19 +217,17 @@ public class FunPlusRUM {
             ]
         )
         
-        trace(event)
+        trace(event: event)
     }
     
-    public func setExtraProperty(key: String, value: String) {
-        extraProperties[key] = value
-        UserDefaults.standard.set(extraProperties, forKey: FunPlusRUM.EXTRA_PROPERTIES_SAVED_KEY)
-    }
-    
-    public func eraseExtraProperty(key: String) {
-        extraProperties[key] = nil
-        UserDefaults.standard.set(extraProperties, forKey: FunPlusRUM.EXTRA_PROPERTIES_SAVED_KEY)
-    }
-    
+    /**
+        Build an event based on given parameters.
+     
+        - parameter eventName:          The event's name.
+        - parameter customeProperties:  The event's custom properties.
+     
+        - returns:  The constructed event.
+     */
     func buildRUMEvent(eventName: String, customProperties: [String: Any]? = nil) -> [String: Any] {
         let sessionManager = FunPlusFactory.getSessionManager(funPlusConfig: funPlusConfig)
         
@@ -204,6 +258,36 @@ public class FunPlusRUM {
         ]
     }
     
+    // MARK: Extra Properties
+    
+    /**
+        Set or override an extra property.
+     
+        - parameter key:    Property key.
+        - parameter value:  Property value.
+     */
+    public func setExtraProperty(key: String, value: String) {
+        extraProperties[key] = value
+        UserDefaults.standard.set(extraProperties, forKey: FunPlusRUM.EXTRA_PROPERTIES_SAVED_KEY)
+    }
+    
+    /**
+        Erase an existing property.
+     
+        - parameter key:    Property key.
+     */
+    public func eraseExtraProperty(key: String) {
+        extraProperties[key] = nil
+        UserDefaults.standard.set(extraProperties, forKey: FunPlusRUM.EXTRA_PROPERTIES_SAVED_KEY)
+    }
+    
+    // MARK: - Helpers
+    
+    /**
+        Get the logger.
+     
+        - returns:  The `Logger` instance.
+     */
     func getLogger() -> Logger {
         return FunPlusFactory.getLogger(funPlusConfig: funPlusConfig)
     }
@@ -232,6 +316,9 @@ public class FunPlusRUM {
     
     // MARK: - Network Listener
     
+    /**
+        Register a network listener.
+     */
     fileprivate func registerNetworkListener() {
         networkReachabilityManager = NetworkReachabilityManager()
         currentNetworkStatus = networkReachabilityManager?.networkReachabilityStatus
@@ -252,6 +339,9 @@ public class FunPlusRUM {
         networkReachabilityManager?.startListening()
     }
     
+    /**
+        Unregister the network listener.
+     */
     fileprivate func unregisterNetworkListener() {
         networkReachabilityManager?.stopListening()
         networkReachabilityManager = nil
