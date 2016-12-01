@@ -26,8 +26,10 @@ class LogAgentClient {
     
     // MARK: - Properties
     
+    /// The max allowed size of data queue.
     static let MAX_QUEUE_SIZE = 1024
     
+    /// The SDK configurations.
     let funPlusConfig: FunPlusConfig
     
     /// The label of current `LogAgentClient` instance, **should be globally unique**.
@@ -68,6 +70,17 @@ class LogAgentClient {
     
     // MARK: - Init & Deinit
     
+    /**
+        Create a new `LogAgentClient` instance.
+     
+        - parameter funPlusConfig:  The SDK configurations.
+        - parameter label:          A globally unique label.
+        - parameter endpoint:       The endpoint of Log Agent.
+        - parameter tag:            The Log Agent tag.
+        - parameter key:            The Log Agent key.
+        - parameter uploadInterval: The interval of uploading processes.
+        - parameter progress:       An optional progress callback.
+     */
     public init(
         funPlusConfig: FunPlusConfig,
         label: String,
@@ -110,6 +123,11 @@ class LogAgentClient {
     
     // MARK: - Trace & Upload & Archive
     
+    /**
+        Trace an entry.
+     
+        - parameter entry: The entry to be traced.
+     */
     func trace(entry: [String: Any]) {
         serialQueue.sync {
             if (self.dataQueue.count >= LogAgentClient.MAX_QUEUE_SIZE) {
@@ -119,12 +137,20 @@ class LogAgentClient {
         }
     }
     
+    /**
+        Trace a batch of entries.
+     
+        - parameter entries: The batch of entries to be traced.
+     */
     func trace(entries: [[String: Any]]) {
         for entry in entries {
             trace(entry: entry)
         }
     }
     
+    /**
+        Submit an upload process.
+     */
     func upload() {
         serialQueue.sync {
             guard !self.isUploading && !self.isOffline && self.dataQueue.count > 0 else { return }
@@ -135,12 +161,20 @@ class LogAgentClient {
                 self.serialQueue.sync(execute: {
                     self.dataQueue.removeSubrange(0..<uploaded)
                     self.isUploading = false
-//                    self.progress?(status, total, uploaded)
+                    
+                    if uploaded == 0 {
+                        self.progress?(false, 0, 0)
+                    } else {
+                        self.progress?(true, uploaded, uploaded)
+                    }
                 })
             }
         }
     }
     
+    /**
+        Archive current data queue to file.
+     */
     func archive() {
         guard !dataQueue.isEmpty else {
             return
@@ -157,6 +191,11 @@ class LogAgentClient {
         }
     }
     
+    /**
+        Unarchive data from file.
+     
+        - returns:  The data unarchived from file, or `nil`.
+     */
     func unarchive() -> [[String: Any]]? {
         guard let json = NSKeyedUnarchiver.unarchiveObject(withFile: archiveFilePath) as? String else {
             return nil
@@ -175,10 +214,16 @@ class LogAgentClient {
     
     // MARK: - Timer
     
+    /**
+        Trigger an upload process.
+     */
     @objc fileprivate func timedUpload() {
         self.upload()
     }
     
+    /**
+        Start the timer.
+     */
     func startTimer() {
         // If `uploadInterval` is 0.0, do not start the timer.
         guard timer == nil, uploadInterval > 0.0 else {
@@ -194,6 +239,9 @@ class LogAgentClient {
         )
     }
     
+    /**
+        Stop the timer.
+     */
     func stopTimer() {
         guard timer != nil else {
             return
@@ -255,6 +303,9 @@ class LogAgentClient {
         archive()
     }
     
+    /**
+        Register app life cycle notification observers.
+     */
     fileprivate func registerNotificationObservers() {
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(self.appDidBecomeActive), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
@@ -264,12 +315,18 @@ class LogAgentClient {
         nc.addObserver(self, selector: #selector(self.appWillTerminate), name: NSNotification.Name.UIApplicationWillTerminate, object: nil)
     }
     
+    /**
+        Unregister notification observers.
+     */
     fileprivate func unregisterNotificationObservers() {
         NotificationCenter.default.removeObserver(self)
     }
     
     // MARK: - Network Listener
     
+    /**
+        Register an network listener.
+     */
     fileprivate func registerNetworkListener() {
         networkReachabilityManager?.listener = { status in
             switch status {
@@ -283,6 +340,9 @@ class LogAgentClient {
         networkReachabilityManager?.startListening()
     }
     
+    /**
+        Unregister the network listener.
+     */
     fileprivate func unregisterNetworkListener() {
         networkReachabilityManager?.stopListening()
     }
