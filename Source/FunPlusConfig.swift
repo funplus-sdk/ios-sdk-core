@@ -55,12 +55,12 @@ public class FunPlusConfig {
         self.loggerTag = rumTag
         self.loggerKey = rumKey
         self.logLevel = environment == .sandbox ? LogLevel.info : LogLevel.error
-        self.loggerUploadInterval = environment == .sandbox ? 10 : 60       // 10 sec / 60 sec
+        self.loggerUploadInterval = environment == .sandbox ? 60 : 5 * 60   // 1 min / 5 min
         
         self.rumEndpoint = FunPlusConfig.LOG_SERVER
         self.rumTag = rumTag
         self.rumKey = rumKey
-        self.rumUploadInterval = environment == .sandbox ? 1 : 10           // 1 sec / 10 sec
+        self.rumUploadInterval = environment == .sandbox ? 10 : 30           // 10 sec / 30 sec
         
         self.rumSampleRate = 1.0
         self.rumEventWhitelist = []
@@ -70,7 +70,7 @@ public class FunPlusConfig {
         self.dataEndpoint = FunPlusConfig.LOG_SERVER
         self.dataTag = appId
         self.dataKey = appKey
-        self.dataUploadInterval = environment == .sandbox ? 1 : 10          // 1 sec / 10 sec
+        self.dataUploadInterval = environment == .sandbox ? 10 : 30          // 10 sec / 30 sec
     }
     
     // Deprecated

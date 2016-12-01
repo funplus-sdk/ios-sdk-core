@@ -28,7 +28,7 @@ class Logger {
     
     let funPlusConfig: FunPlusConfig
     let logLevel: LogLevel
-    var logs = [String]()
+    var logs = [[String: Any]]()
     
     init(funPlusConfig: FunPlusConfig) {
         self.funPlusConfig = funPlusConfig
@@ -37,8 +37,8 @@ class Logger {
  
     // MARK: - Trace
     
-    func consumeLogs() -> [String] {
-        let l = logs.map { $0.copy() as! String }
+    func consumeLogs() -> [[String: Any]] {
+        let l = logs
         logs.removeAll()
         return l
     }
@@ -90,7 +90,7 @@ class Logger {
         if (logs.count > Logger.MAX_QUEUE_SIZE) {
             logs.removeFirst()
         }
-        logs.append(entry.description)
+        logs.append(entry)
         objc_sync_exit(self)
     }
     

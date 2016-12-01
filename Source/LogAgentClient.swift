@@ -26,8 +26,10 @@ class LogAgentClient {
     
     // MARK: - Properties
     
-    static let MAX_QUEUE_SIZE = 5000
+    /// The max allowed size of data queue.
+    static let MAX_QUEUE_SIZE = 1024
     
+    /// The SDK configurations.
     let funPlusConfig: FunPlusConfig
     
     /// The label of current `LogAgentClient` instance, **should be globally unique**.
@@ -37,7 +39,7 @@ class LogAgentClient {
     let uploader: LogAgentDataUploader
     
     /// The data container used to cache all incoming data. It is actually a mutable string array.
-    var dataQueue: [String]
+    var dataQueue: [[String: Any]]
     
      /// The serial operation queue.
     let serialQueue: DispatchQueue
@@ -68,6 +70,17 @@ class LogAgentClient {
     
     // MARK: - Init & Deinit
     
+    /**
+        Create a new `LogAgentClient` instance.
+     
+        - parameter funPlusConfig:  The SDK configurations.
+        - parameter label:          A globally unique label.
+        - parameter endpoint:       The endpoint of Log Agent.
+        - parameter tag:            The Log Agent tag.
+        - parameter key:            The Log Agent key.
+        - parameter uploadInterval: The interval of uploading processes.
+        - parameter progress:       An optional progress callback.
+     */
     public init(
         funPlusConfig: FunPlusConfig,
         label: String,
@@ -85,13 +98,13 @@ class LogAgentClient {
         
         serialQueue = DispatchQueue(label: label, attributes: [])
         archiveFilePath = {
-            let filename = "logger-archive-\(label).plist"
+            let filename = "logger-archive-\(label).log"
             let libraryDirectory = FileManager().urls(for: .libraryDirectory, in: .userDomainMask).last!
             return libraryDirectory.appendingPathComponent(filename).path
         }()
         
         // Unarchive local stored data.
-        dataQueue = NSKeyedUnarchiver.unarchiveObject(withFile: archiveFilePath) as? [String] ?? []
+        dataQueue = NSKeyedUnarchiver.unarchiveObject(withFile: archiveFilePath) as? [[String: Any]] ?? []
         // Clear local stored data.
         NSKeyedArchiver.archiveRootObject([], toFile: archiveFilePath)
         
@@ -108,71 +121,108 @@ class LogAgentClient {
         unregisterNotificationObservers()
     }
     
-    func isBusy() -> Bool {
-        return dataQueue.count >= LogAgentClient.MAX_QUEUE_SIZE
-    }
-    
     // MARK: - Trace & Upload & Archive
     
-    func trace(_ entry: String) {
+    /**
+        Trace an entry.
+     
+        - parameter entry: The entry to be traced.
+     */
+    func trace(entry: [String: Any]) {
         serialQueue.sync {
             if (self.dataQueue.count >= LogAgentClient.MAX_QUEUE_SIZE) {
-                self.dataQueue.removeFirst()
+                self.dataQueue.remove(at: 0)
             }
             self.dataQueue.append(entry)
         }
     }
     
-    func trace(_ entries: [String]) {
+    /**
+        Trace a batch of entries.
+     
+        - parameter entries: The batch of entries to be traced.
+     */
+    func trace(entries: [[String: Any]]) {
         for entry in entries {
-            trace(entry)
+            trace(entry: entry)
         }
     }
     
+    /**
+        Submit an upload process.
+     */
     func upload() {
         serialQueue.sync {
             guard !self.isUploading && !self.isOffline && self.dataQueue.count > 0 else { return }
             
             self.isUploading = true
             
-            self.uploader.upload(self.dataQueue, completion: { (status, total, uploaded) in
+            self.uploader.upload(data: &self.dataQueue) { [unowned self] uploaded in
                 self.serialQueue.sync(execute: {
                     self.dataQueue.removeSubrange(0..<uploaded)
-                    self.progress?(status, total, uploaded)
                     self.isUploading = false
+                    
+                    if uploaded == 0 {
+                        self.progress?(false, 0, 0)
+                    } else {
+                        self.progress?(true, uploaded, uploaded)
+                    }
                 })
-            })
+            }
         }
     }
     
+    /**
+        Archive current data queue to file.
+     */
     func archive() {
-        if !self.dataQueue.isEmpty {
-            if NSKeyedArchiver.archiveRootObject(self.dataQueue, toFile: self.archiveFilePath) {
-                print("\(self.label): \(self.dataQueue.count) entries archived")
-            } else {
-                print("Failed to archive harvest data")
-            }
+        guard !dataQueue.isEmpty else {
+            return
+        }
+        
+        if NSKeyedArchiver.archiveRootObject(dataQueue, toFile: archiveFilePath) {
+            print("\(label): \(dataQueue.count) entries archived")
+            dataQueue.removeAll()
         }
     }
     
     // MARK: - Timer
     
+    /**
+        Trigger an upload process.
+     */
     @objc fileprivate func timedUpload() {
         self.upload()
     }
     
+    /**
+        Start the timer.
+     */
     func startTimer() {
         // If `uploadInterval` is 0.0, do not start the timer.
-        if timer == nil && uploadInterval > 0.0 {
-            timer = Timer.scheduledTimer(timeInterval: uploadInterval, target: self, selector: #selector(timedUpload), userInfo: nil, repeats: true)
+        guard timer == nil, uploadInterval > 0.0 else {
+            return
         }
+        
+        timer = Timer.scheduledTimer(
+            timeInterval: uploadInterval,
+            target: self,
+            selector: #selector(timedUpload),
+            userInfo: nil,
+            repeats: true
+        )
     }
     
+    /**
+        Stop the timer.
+     */
     func stopTimer() {
-        if timer != nil {
-            timer?.invalidate()
-            timer = nil
+        guard timer != nil else {
+            return
         }
+        
+        timer!.invalidate()
+        timer = nil
     }
     
     // MARK: - App Life Cycle
@@ -227,6 +277,9 @@ class LogAgentClient {
         archive()
     }
     
+    /**
+        Register app life cycle notification observers.
+     */
     fileprivate func registerNotificationObservers() {
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(self.appDidBecomeActive), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
@@ -236,12 +289,18 @@ class LogAgentClient {
         nc.addObserver(self, selector: #selector(self.appWillTerminate), name: NSNotification.Name.UIApplicationWillTerminate, object: nil)
     }
     
+    /**
+        Unregister notification observers.
+     */
     fileprivate func unregisterNotificationObservers() {
         NotificationCenter.default.removeObserver(self)
     }
     
     // MARK: - Network Listener
     
+    /**
+        Register an network listener.
+     */
     fileprivate func registerNetworkListener() {
         networkReachabilityManager?.listener = { status in
             switch status {
@@ -255,6 +314,9 @@ class LogAgentClient {
         networkReachabilityManager?.startListening()
     }
     
+    /**
+        Unregister the network listener.
+     */
     fileprivate func unregisterNetworkListener() {
         networkReachabilityManager?.stopListening()
     }

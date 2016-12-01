@@ -8,18 +8,6 @@
 
 import Foundation
 
-// MARK: - CompletionHandler
-
-/**
-    The `CompletionHandler` is used as callback function when uploading finishes.
- 
-    - parameter status:     The status of this uploading process.
-    - parameter total:      The total count of logs.
-    - parameter uploaded:   The count of logs uploaded. If status is `true`, this value
-                            should equal to the `total` value.
- */
-typealias CompletionHandler = (_ status: Bool, _ total: Int, _ uploaded: Int) -> Void
-
 // MARK: - LogAgentDataUploader
 
 /// See http://wiki.ifunplus.cn/display/core/http+log+agent+API
@@ -30,6 +18,7 @@ class LogAgentDataUploader {
     /// Max size of an upload batch.
     let MAX_BATCH_SIZE = 100
     
+    /// The configurations.
     let funPlusConfig: FunPlusConfig
     
     /// The endpoint where to upload data to.
@@ -41,18 +30,18 @@ class LogAgentDataUploader {
     /// The FunPlus Log Agent key.
     let key: String
     
-    /// The uploading history.
-    var uploadHistory = [
-        (status: Bool, total: Int, uploaded: Int, batch: Int, start: Date, duration: TimeInterval)
-    ]()
-    
-    /// The requests history.
-    var requestHistory = [
-        (status: Bool, request: URLRequest, response: URLResponse, timeline: Timeline)
-    ]()
-    
     // MARK: - Init
     
+    /**
+        Create a `LogAgentDataUploader` instance.
+     
+        - parameter funPlusConfig:  The configurations.
+        - parameter endpoint:       The Log Agent endpoint.
+        - parameter tag:            The tag used to request to Log Agent.
+        - parameter key:            The key used to request to Log Agent.
+     
+        - returns:  The created instance.
+     */
     init(funPlusConfig: FunPlusConfig, endpoint: String, tag: String, key: String) {
         self.funPlusConfig = funPlusConfig
         self.endpoint = endpoint
@@ -64,82 +53,93 @@ class LogAgentDataUploader {
     
     /**
         Upload a given set of data to endpoint. When the uploading progress completes
-        (either succeeds or fails), an optional completion callback will be called.
-     
-        Data might not be ready at this moment, invoke `dataPreparationHandler()` to
-        properly handle data before uploading.
+        (either succeeds or fails), a completion callback will be called.
      
         - parameter data:       The data set to be uploaded.
-        - parameter completion: The completion callback. `nil` by default.
+        - parameter completion: The completion callback.
      */
-    func upload(_ data: [String], completion: @escaping CompletionHandler) {
-        var closure: ((Void) -> Void)!
+    func upload(data: inout [[String: Any]], completion: @escaping (Int) -> Void) {
         let total = data.count
-        var uploaded = 0
+        
+        guard total > 0 else {
+            completion(0)
+            return
+        }
+        
+        // Batch size must not exceed MAX_BATCH_SIZE.
+        let batchSize = min(total, MAX_BATCH_SIZE)
+        let subArray = Array(data[0..<batchSize])
+        let batch = subArray.map { item -> String in
+            do {
+                let data = try JSONSerialization.data(withJSONObject: item, options: [])
+                if let json = String(data: data, encoding: String.Encoding.utf8) {
+                    return json
+                } else {
+                    return ""
+                }
+            } catch {
+                return ""
+            }
+        }
+        
+        let timestamp = Int64(Date().timeIntervalSince1970 * 1000)
+        let sig = "\(self.tag):\(timestamp):\(self.key)".md5()
+        let url = "\(self.endpoint)?tag=\(self.tag)&timestamp=\(timestamp)&num=\(batchSize)&signature=\(sig)"
+        let requestBody = batch.joined(separator: "\n").data(using: String.Encoding.utf8)
 
-        closure = {
-            // Upload completes? Return.
-            guard total > uploaded else {
-                completion(total == uploaded, total, uploaded)
+        LogAgentDataUploader.request(url: url, data: requestBody!) { status in
+            completion(status ? batchSize : 0)
+        }
+    }
+    
+    /**
+        Submit a request.
+     
+        - parameter url:    The URL to request to.
+        - parameter data:   The data to be attached in request body.
+        - completion:       The completion callback with one parameter
+                            indication the request status.
+     */
+    private class func request(
+        url: String,
+        data: Data,
+        completion: @escaping (_ status: Bool) -> ())
+    {
+        // Compose the URL.
+        guard let url = URL(string: url) else {
+            completion(false)
+            return
+        }
+        
+        // Compose the request.
+        var request = URLRequest(url: url)
+        request.httpMethod = "post"
+        request.httpBody = data
+        
+        // Use the default shared session.
+        let session = URLSession.shared
+        session.uploadTask(with: request, from: data) { (data, res, error) -> Void in
+            //==============================================
+            //     Step 1: Check response status
+            //==============================================
+            guard let res = res as? HTTPURLResponse, res.statusCode == 200 else {
+                completion(false)
                 return
             }
             
-            // Batch size must not exceed MAX_BATCH_SIZE.
-            let batchSize = min(total - uploaded, self.MAX_BATCH_SIZE)
-            let batch = Array(data[0..<batchSize])
-            
-            let timestamp = Int64(Date().timeIntervalSince1970 * 1000)
-            let sig = "\(self.tag):\(timestamp):\(self.key)".md5()
-            let url = "\(self.endpoint)?tag=\(self.tag)&timestamp=\(timestamp)&num=\(batchSize)&signature=\(sig)"
-            let requestBody = batch.joined(separator: "\n").data(using: String.Encoding.utf8)
-            
-            let startTime = Date()
-            
-            RequestSessionManager.default.upload(requestBody!, to: url).responseString { res in
-                if let request = res.request, let response = res.response {
-                    #if DEBUG
-                    self.requestHistory.append(
-                        (res.response?.statusCode == 200, request, response, res.timeline)
-                    )
-                    #endif
-                }
-                
-                guard res.response?.statusCode == 200 && res.result.value == "OK" else {
-                    #if DEBUG
-                    self.uploadHistory.append((
-                        status: true,
-                        total: total,
-                        uploaded: uploaded,
-                        batch: batchSize,
-                        start: startTime,
-                        duration: NSDate().timeIntervalSince(startTime)
-                    ))
-                    #endif
-                    
-                    completion(total == uploaded, total, uploaded)
-                    
-                    // Break.
-                    return
-                }
-                
-                uploaded += batchSize
-                
-                #if DEBUG
-                self.uploadHistory.append((
-                    status: true,
-                    total: total,
-                    uploaded: uploaded,
-                    batch: batchSize,
-                    start: startTime,
-                    duration: NSDate().timeIntervalSince(startTime)
-                ))
-                #endif
-                
-                // Continue.
-                closure()
+            //==============================================
+            //     Step 2: Check response body
+            //==============================================
+            guard let data = data, String(data: data, encoding: String.Encoding.utf8) == "OK" else {
+                completion(false)
+                return
             }
-        }
-
-        closure()
+            
+            //==============================================
+            //     Okay
+            //==============================================
+            completion(true)
+            session.reset {}
+        }.resume()
     }
 }

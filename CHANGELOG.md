@@ -1,11 +1,5 @@
 # Changelog
 
-### v4.0.4-alpha.0
-
-* Automatically trace `new_user` event.
-* Bugfix: RUM crashes when too many events coming in.
-* Remove logs that are not so useful.
-
 ### v4.0.3
 
 * Increase SDK logs uploading interval.

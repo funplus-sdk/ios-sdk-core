@@ -32,7 +32,7 @@ class LogAgentClientTests: XCTestCase {
         
         // When
         for i in 1...testCount {
-            logger.trace("message_\(i)")
+            logger.trace(entry: ["message": "\(i)"])
         }
 
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(3 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) {
@@ -47,13 +47,13 @@ class LogAgentClientTests: XCTestCase {
 
     func testTraceWithUploader() {
         // Given
-        let testCount = 512
+        let testCount = 100
         let logger = LogAgentClient(funPlusConfig: funPlusConfig, label: LABEL, endpoint: ENDPOINT, tag: TAG, key: KEY)
         let ex = expectation(description: "\(logger)")
         
         // When
         for i in 1...testCount {
-            logger.trace("message_\(i)")
+            logger.trace(entry: ["message": "\(i)"])
         }
         
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) {
@@ -72,13 +72,13 @@ class LogAgentClientTests: XCTestCase {
 
     func testTimedUpload() {
         // Given
-        let testCount = 512
+        let testCount = 100
         let logger = LogAgentClient(funPlusConfig: funPlusConfig, label: LABEL, endpoint: ENDPOINT, tag: TAG, key: KEY, uploadInterval: 2.0)
         let ex = expectation(description: "\(logger)")
         
         // When
         for i in 1...testCount {
-            logger.trace("message_\(i)")
+            logger.trace(entry: ["message": "\(i)"])
         }
         
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(10 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) {
@@ -93,18 +93,18 @@ class LogAgentClientTests: XCTestCase {
  
     func testTimedUploadWhileTracing() {
         // Given
-        let testCount = 512
+        let testCount = 100
         let logger = LogAgentClient(funPlusConfig: funPlusConfig, label: LABEL, endpoint: ENDPOINT, tag: TAG, key: KEY, uploadInterval: 2.0)
         let ex = expectation(description: "\(logger)")
         
         // When
         for i in 1...testCount {
-            logger.trace("message_\(i)")
+            logger.trace(entry: ["message": "\(i)"])
         }
         
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(2 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) {
             for i in 1...testCount {
-                logger.trace("message_\(i)")
+                logger.trace(entry: ["message": "\(i)"])
             }
         }
         
@@ -123,63 +123,55 @@ class LogAgentClientTests: XCTestCase {
         let testCount = 512
         let logger = LogAgentClient(funPlusConfig: funPlusConfig, label: LABEL, endpoint: ENDPOINT, tag: TAG, key: KEY)
         let ex = expectation(description: "\(logger)")
-        
+
         // When
         for i in 1...testCount {
-            logger.trace("message_\(i)")
+            logger.trace(entry: ["message": "\(i)"])
         }
 
-        (logger.serialQueue).async {
-            logger.archive()
-        }
-        
-        for i in 1...testCount {
-            logger.trace("message_\(i)")
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(6 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) {
+        logger.archive()
+
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(3 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) {
             ex.fulfill()
         }
-        
+
         waitForExpectations(timeout: TIMEOUT, handler: nil)
-        
+
         // Then
-        XCTAssertEqual(logger.dataQueue.count, 2 * testCount, "dataQueue.count should be \(2 * testCount)")
-        
-        let archivedData = NSKeyedUnarchiver.unarchiveObject(withFile: logger.archiveFilePath) as? [String]
+        let archivedData = NSKeyedUnarchiver.unarchiveObject(withFile: logger.archiveFilePath) as? [[String: Any]]
         XCTAssertNotNil(archivedData, "archivedData should not be nil")
         XCTAssertEqual(archivedData!.count, testCount, "archivedData.count should be \(testCount)")
     }
 
     func testUnarchived() {
         // Given
+        var array = [[String: Any]]()
         let testCount = 512
-        let logger = LogAgentClient(funPlusConfig: funPlusConfig, label: LABEL, endpoint: ENDPOINT, tag: TAG, key: KEY)
-        let ex = expectation(description: "\(logger)")
-        
+        let ex = expectation(description: "logger")
+
         // When
         for i in 1...testCount {
-            logger.trace("message_\(i)")
+            array.append(["message": "\(i)"])
         }
+
+        let archiveFilePath = { () -> String in 
+            let filename = "logger-archive-test-logger.log"
+            let libraryDirectory = FileManager().urls(for: .libraryDirectory, in: .userDomainMask).last!
+            return libraryDirectory.appendingPathComponent(filename).path
+        }()
         
-        (logger.serialQueue).async {
-            logger.archive()
-        }
-        
-        let logger2 = LogAgentClient(funPlusConfig: funPlusConfig, label: LABEL, endpoint: ENDPOINT, tag: TAG, key: KEY)
-        
-        for i in 1...testCount {
-            logger2.trace("message_\(i)")
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(6 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) {
+        NSKeyedArchiver.archiveRootObject(array, toFile: archiveFilePath)
+
+        let logger = LogAgentClient(funPlusConfig: funPlusConfig, label: LABEL, endpoint: ENDPOINT, tag: TAG, key: KEY)
+
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(3 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) {
             ex.fulfill()
         }
-        
+
         waitForExpectations(timeout: TIMEOUT, handler: nil)
-        
+
         // Then
-        XCTAssertEqual(logger2.dataQueue.count, testCount, "dataQueue.count should be \(testCount)")
+        XCTAssertEqual(logger.dataQueue.count, testCount, "dataQueue.count should be \(testCount)")
     }
  
     func testStopTimer() {
@@ -240,13 +232,13 @@ class LogAgentClientTests: XCTestCase {
     
     func testAppDidEnterBackground() {
         // Given
-        let testCount = 512
+        let testCount = 100
         let logger = LogAgentClient(funPlusConfig: funPlusConfig, label: LABEL, endpoint: ENDPOINT, tag: TAG, key: KEY, uploadInterval: 0.0)
         let ex = expectation(description: "\(logger)")
         
         // When
         for i in 1...testCount {
-            logger.trace("message_\(i)")
+            logger.trace(entry: ["message": "\(i)"])
         }
         
         logger.appDidEnterBackground()
@@ -288,30 +280,22 @@ class LogAgentClientTests: XCTestCase {
         let testCount = 512
         let logger = LogAgentClient(funPlusConfig: funPlusConfig, label: LABEL, endpoint: ENDPOINT, tag: TAG, key: KEY, uploadInterval: 0.0)
         let ex = expectation(description: "\(logger)")
-        
+
         // When
         for i in 1...testCount {
-            logger.trace("message_\(i)")
+            logger.trace(entry: ["message": "\(i)"])
         }
-        
-        (logger.serialQueue).async {
-            logger.appWillTerminate()
-        }
-        
-        for i in 1...testCount {
-            logger.trace("message_\(i)")
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(6 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) {
+
+        logger.appWillTerminate()
+
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(3 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) {
             ex.fulfill()
         }
-        
+
         waitForExpectations(timeout: TIMEOUT, handler: nil)
-        
+
         // Then
-        XCTAssertEqual(logger.dataQueue.count, 2 * testCount, "dataQueue.count should be \(2 * testCount)")
-        
-        let archivedData = NSKeyedUnarchiver.unarchiveObject(withFile: logger.archiveFilePath) as? [String]
+        let archivedData = NSKeyedUnarchiver.unarchiveObject(withFile: logger.archiveFilePath) as? [[String: Any]]
         XCTAssertNotNil(archivedData, "archivedData should not be nil")
         XCTAssertEqual(archivedData!.count, testCount, "archivedData.count should be \(testCount)")
     }
