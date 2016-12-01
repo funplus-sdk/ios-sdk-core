@@ -18,6 +18,7 @@ class LogAgentDataUploader {
     /// Max size of an upload batch.
     let MAX_BATCH_SIZE = 100
     
+    /// The configurations.
     let funPlusConfig: FunPlusConfig
     
     /// The endpoint where to upload data to.
@@ -31,6 +32,14 @@ class LogAgentDataUploader {
     
     // MARK: - Init
     
+    /**
+        Create a `LogAgentDataUploader` instance.
+     
+        - parameter funPlusConfig:  The configurations.
+        - parameter endpoint:       The Log Agent endpoint.
+        - parameter tag:            The tag used to request to Log Agent.
+        - parameter key:            The key used to request to Log Agent.
+     */
     init(funPlusConfig: FunPlusConfig, endpoint: String, tag: String, key: String) {
         self.funPlusConfig = funPlusConfig
         self.endpoint = endpoint
@@ -94,27 +103,39 @@ class LogAgentDataUploader {
         data: Data,
         completion: @escaping (_ status: Bool) -> ())
     {
+        // Compose the URL.
         guard let url = URL(string: url) else {
             completion(false)
             return
         }
         
+        // Compose the request.
         var request = URLRequest(url: url)
         request.httpMethod = "post"
         request.httpBody = data
         
+        // Use the default shared session.
         let session = URLSession.shared
         session.uploadTask(with: request, from: data) { (data, res, error) -> Void in
+            //==============================================
+            //     Step 1: Check response status
+            //==============================================
             guard let res = res as? HTTPURLResponse, res.statusCode == 200 else {
                 completion(false)
                 return
             }
             
+            //==============================================
+            //     Step 2: Check response body
+            //==============================================
             guard let data = data, String(data: data, encoding: String.Encoding.utf8) == "OK" else {
                 completion(false)
                 return
             }
             
+            //==============================================
+            //     Okay
+            //==============================================
             completion(true)
             session.reset {}
         }.resume()
