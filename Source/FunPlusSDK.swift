@@ -94,6 +94,8 @@ public class FunPlusSDK {
         Initialize the SDK using given configurations.
      
         - parameter funPlusConfig:  Configurations used to initialize the SDK.
+     
+        - returns:  The created SDK isntance.
      */
     private init(funPlusConfig: FunPlusConfig) {
         self.funPlusConfig = funPlusConfig

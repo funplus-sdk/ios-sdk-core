@@ -39,6 +39,8 @@ class LogAgentDataUploader {
         - parameter endpoint:       The Log Agent endpoint.
         - parameter tag:            The tag used to request to Log Agent.
         - parameter key:            The key used to request to Log Agent.
+     
+        - returns:  The created instance.
      */
     init(funPlusConfig: FunPlusConfig, endpoint: String, tag: String, key: String) {
         self.funPlusConfig = funPlusConfig

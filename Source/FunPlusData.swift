@@ -27,6 +27,10 @@ private extension String {
 
 // MARK: - DataEventTracedListener
 
+///
+/// Classes adopted to the `DataEventTracedListener` will be notified
+/// when some event is traced.
+///
 public protocol DataEventTracedListener {
     func kpiEventTraced(event: [String: Any])
     func customEventTraced(event: [String: Any])
@@ -48,22 +52,44 @@ public class FunPlusData: SessionStatusChangeListener {
     
     // MARK: - Properties
     
+    /// Key used to save extra properties.
     static let EXTRA_PROPERTIES_SAVED_KEY = "com.funplus.sdk.ExtraDataProperties"
     
+    /// The label for `LogAgentClient`, **should be globally unique**.
     let label = "com.funplus.sdk.FunPlusData"
+    
+    /// The configurations.
     let funPlusConfig: FunPlusConfig
+    
+    /// The `LogAgentClient` instance used to trace KPI events.
     let kpiLogAgentClient: LogAgentClient
+    
+    /// The `LogAgentClient` instance used to trace custom events.
     let customLogAgentClient: LogAgentClient
     
+    /// Listeners for event tracing.
     var listeners = [DataEventTracedListener]()
     
+    /// User-defined properties.
     var extraProperties: [String: String]
     
+    #if DEBUG
+    /// History of traced KPI events.
     var kpiTraceHistory = [(eventString: String, traceTime: Date)]()
+    
+    /// History of traced custom events.
     var customTraceHistory = [(eventString: String, traceTime: Date)]()
+    #endif
     
     // MARK: - Init
     
+    /**
+        Create a new `FunPlusData` instance.
+     
+        - parameter funPlusConfig:  The configurations.
+     
+        - returns:  The created instance.
+     */
     init(funPlusConfig: FunPlusConfig) {
         self.funPlusConfig = funPlusConfig
         
@@ -89,48 +115,66 @@ public class FunPlusData: SessionStatusChangeListener {
             uploadInterval: uploadInterval
         )
         
-        extraProperties = UserDefaults.standard.dictionary(forKey: FunPlusData.EXTRA_PROPERTIES_SAVED_KEY) as? [String : String] ?? [:]
+        extraProperties = UserDefaults.standard.dictionary(forKey: FunPlusData.EXTRA_PROPERTIES_SAVED_KEY) as? [String: String] ?? [:]
         
         FunPlusFactory.getSessionManager(funPlusConfig: funPlusConfig).registerListener(listener: self)
         
         getLogger().i("FunPlusData ready to work")
     }
     
+    // MARK: - Listener
+    
+    /**
+        Register a listener for event tracing. Make sure not to register twice for one listner.
+     
+        - parameter listener:   The listener to be registered.
+     */
     public func registerEventTracedListener(listener: DataEventTracedListener) {
         listeners.append(listener)
     }
     
     // MARK: - Trace
     
+    /**
+        Trace an event.
+     
+        - parameter eventType:  The event type.
+        - parameter event:      The event dict.
+     */
     func trace(eventType: DataEventType, event: [String: Any]) {
         switch eventType {
         case .kpi:
             kpiLogAgentClient.trace(entry: event)
             
-            #if DEBUG
-            kpiTraceHistory.append(eventString: event.description, traceTime: Date())
-            #endif
-            
             // Publish this event.
             for listener in listeners {
                 listener.kpiEventTraced(event: event)
             }
-        case .custom:
-            customLogAgentClient.trace(entry: event)
             
             #if DEBUG
-            customTraceHistory.append(eventString: event.description, traceTime: Date())
+            kpiTraceHistory.append(eventString: event.description, traceTime: Date())
             #endif
+        case .custom:
+            customLogAgentClient.trace(entry: event)
             
             // Publish this event.
             for listener in listeners {
                 listener.customEventTraced(event: event)
             }
+            
+            #if DEBUG
+                customTraceHistory.append(eventString: event.description, traceTime: Date())
+            #endif
         }
         
         getLogger().i("Trace Data event: \(event)")
     }
     
+    /**
+        Trace a custom event.
+     
+        - parameter event:  The event dict.
+     */
     public func traceCustom(event: [String: Any]) {
         guard let _ = event["event"] as? String else {
             return
@@ -139,14 +183,28 @@ public class FunPlusData: SessionStatusChangeListener {
         trace(eventType: .custom, event: event)
     }
     
+    /**
+        Trace a custom event by name and properties.
+     
+        - parameter eventName:  The event's name.
+        - parameter properties: The event's properties.
+     */
     public func traceCustom(eventName: String, properties: [String: Any]) {
         trace(eventType: .custom, event: buildDataEvent(eventName: eventName, customProperties: properties))
     }
     
+    /**
+        Trace a `session_start` event.
+     */
     public func traceSessionStart() {
         trace(eventType: .kpi, event: buildDataEvent(eventName: "session_start"))
     }
     
+    /**
+        Trace a `session_end` event.
+     
+        - parameter sessionLength:  Length of the ending session.
+     */
     public func traceSessionEnd(sessionLength: Int64) {
         let event = buildDataEvent(
             eventName: "session_end",
@@ -157,6 +215,9 @@ public class FunPlusData: SessionStatusChangeListener {
         trace(eventType: .kpi, event: event)
     }
     
+    /**
+        Trace a `new_user` event.
+     */
     public func traceNewUser() {
         trace(eventType: .kpi, event: buildDataEvent(eventName: "new_user"))
     }
@@ -204,16 +265,14 @@ public class FunPlusData: SessionStatusChangeListener {
         trace(eventType: .kpi, event: event)
     }
     
-    public func setExtraProperty(key: String, value: String) {
-        extraProperties[key] = value
-        UserDefaults.standard.set(extraProperties, forKey: FunPlusData.EXTRA_PROPERTIES_SAVED_KEY)
-    }
-    
-    public func eraseExtraProperty(key: String) {
-        extraProperties[key] = nil
-        UserDefaults.standard.set(extraProperties, forKey: FunPlusData.EXTRA_PROPERTIES_SAVED_KEY)
-    }
-    
+    /**
+        Build an event based on given parameters.
+     
+        - parameter eventName:          The event's name.
+        - parameter customeProperties:  The event's custom properties.
+     
+        - returns:  The constructed event.
+     */
     func buildDataEvent(eventName: String, customProperties: [String: Any]? = nil) -> [String: Any] {
         let sessionManager = FunPlusFactory.getSessionManager(funPlusConfig: funPlusConfig)
         
@@ -244,17 +303,62 @@ public class FunPlusData: SessionStatusChangeListener {
         ]
     }
     
-    func getLogger() -> Logger {
-        return FunPlusFactory.getLogger(funPlusConfig: funPlusConfig)
+    // MARK: Extra Properties
+    
+    /**
+        Set or override an extra property.
+     
+        - parameter key:    Property key.
+        - parameter value:  Property value.
+     */
+    public func setExtraProperty(key: String, value: String) {
+        extraProperties[key] = value
+        UserDefaults.standard.set(extraProperties, forKey: FunPlusData.EXTRA_PROPERTIES_SAVED_KEY)
     }
     
-    // MARK: - SessionStatusChangeListener Implementation
+    /**
+        Erase an existing property.
+     
+        - parameter key:    Property key.
+     */
+    public func eraseExtraProperty(key: String) {
+        extraProperties[key] = nil
+        UserDefaults.standard.set(extraProperties, forKey: FunPlusData.EXTRA_PROPERTIES_SAVED_KEY)
+    }
     
+    // MARK: - SessionStatusChangeListener
+    
+    /**
+        Shall be called when a session is started.
+     
+        - parameter userId:         The user ID.
+        - parameter sessionId:      The session ID.
+        - parameter sessionStartTs: The session started timestamp.
+     */
     func sessionStarted(userId: String, sessionId: String, sessionStartTs: Int64) {
         traceSessionStart()
     }
     
+    /**
+        Shall be called when a session is ended.
+     
+        - parameter userId:         The use ID.
+        - parameter sessionId:      The session ID.
+        - parameter sessionStartTs: The session started timestamp.
+        - parameter sessionLength:  The session's length.
+     */
     func sessionEnded(userId: String, sessionId: String, sessionStartTs: Int64, sessionLength: Int64) {
         traceSessionEnd(sessionLength: sessionLength)
+    }
+    
+    // MARK: - Helpers
+    
+    /**
+        Get the logger.
+     
+        - returns:  The `Logger` instance.
+     */
+    func getLogger() -> Logger {
+        return FunPlusFactory.getLogger(funPlusConfig: funPlusConfig)
     }
 }
