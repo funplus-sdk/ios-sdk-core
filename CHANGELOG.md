@@ -1,5 +1,12 @@
 # Changelog
 
+### v4.0.4-alpha.2
+
+* Milliseconds for RUM and Data events.
+* Progress callbacks for Data events uploading.
+* Modify uploading intervals.
+* Remove SDK logs in `FunPlusData.trace()`.
+
 ### v4.0.4-alpha.1
 
 * OOM bug fix.

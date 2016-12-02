@@ -150,7 +150,7 @@ The SDK traces following KPI events automatically:
 #### Trace custom events
 
 ```swift
-FunPlusSDK.getFunPlusData().traceCustom(event)
+FunPlusSDK.getFunPlusData().traceCustom(event:)
 ```
 
 Besides those four KPI events, you might want to trace some custom events. Call the `traceCustom()` method to achieve this task.
@@ -174,6 +174,12 @@ The event you're passing in to this method is a dictionary. Below is an example:
         "install_ts": "{Timestamp(millisecond)}",
         "other_properties": "..."
     }
+```
+
+It's not fun to type all common fields again and again. Instead, you are allowed to pass in only event-specific fields by picking an alternative method:
+
+```swift
+FunPlusSDK.getFunPlusData().traceCustom(eventName:, properties:)
 ```
 
 #### Set extra properties to Data events
