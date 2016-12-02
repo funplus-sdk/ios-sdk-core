@@ -89,8 +89,10 @@ public class FunPlusRUM {
             tag: tag,
             key: key,
             uploadInterval: uploadInterval,
-            progress: { (_, total, uploaded) in
-                print("Uploading RUM events in progress: {total=\(total), uploaded=\(uploaded)}")
+            progress: { (_, _, uploaded) in
+                if uploaded != 0 {
+                    print("Uploading RUM events in progress: {uploaded=\(uploaded)}")
+                }
             }
         )
         

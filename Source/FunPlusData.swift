@@ -104,7 +104,12 @@ public class FunPlusData: SessionStatusChangeListener {
             endpoint: endpoint,
             tag: tag.core,
             key: key,
-            uploadInterval: uploadInterval
+            uploadInterval: uploadInterval,
+            progress: { (_, _, uploaded) in
+                if uploaded != 0 {
+                    print("Uploading Data KPI events in progress: {uploaded=\(uploaded)}")
+                }
+            }
         )
         customLogAgentClient = LogAgentClient(
             funPlusConfig: funPlusConfig,
@@ -112,7 +117,12 @@ public class FunPlusData: SessionStatusChangeListener {
             endpoint: endpoint,
             tag: tag.custom,
             key: key,
-            uploadInterval: uploadInterval
+            uploadInterval: uploadInterval,
+            progress: { (_, _, uploaded) in
+                if uploaded != 0 {
+                    print("Uploading Data custom events in progress: {uploaded=\(uploaded)}")
+                }
+            }
         )
         
         extraProperties = UserDefaults.standard.dictionary(forKey: FunPlusData.EXTRA_PROPERTIES_SAVED_KEY) as? [String: String] ?? [:]
