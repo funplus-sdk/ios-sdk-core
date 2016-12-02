@@ -20,7 +20,7 @@ public class FunPlusSDK {
     
     // MARK: - Properties
     
-    public static let VERSION = "4.0.4-alpha.1"
+    public static let VERSION = "4.0.4-alpha.2"
     
     /// The singleton instance.
     static var instance: FunPlusSDK?
