@@ -292,7 +292,7 @@ public class FunPlusData: SessionStatusChangeListener {
             "os":           DeviceInfo.systemName,
             "os_version":   DeviceInfo.systemVersion,
             "lang":         DeviceInfo.appLanguage,
-            "install_ts":   "\(Int64(FunPlusSDK.getInstallDate().timeIntervalSince1970) * 1000)"
+            "install_ts":   "\(Int64(FunPlusSDK.getInstallDate().timeIntervalSince1970 * 1000))"
         ]
         
         if let customProperties = customProperties {
@@ -304,7 +304,7 @@ public class FunPlusData: SessionStatusChangeListener {
         return [
             "event":        eventName,
             "data_version": "2.0",
-            "ts":           "\(Int64(Date().timeIntervalSince1970) * 1000)",
+            "ts":           "\(Int64(Date().timeIntervalSince1970 * 1000))",
             "app_id":       funPlusConfig.dataTag,
             "user_id":      sessionManager.userId,
             "session_id":   sessionManager.sessionId,

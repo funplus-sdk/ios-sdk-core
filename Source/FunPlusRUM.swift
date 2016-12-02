@@ -250,7 +250,7 @@ public class FunPlusRUM {
         return [
             "event":        eventName,
             "data_version": "1.0",
-            "ts":           "\(Int64(Date().timeIntervalSince1970) * 1000)",
+            "ts":           "\(Int64(Date().timeIntervalSince1970 * 1000))",
             "app_id":       funPlusConfig.appId,
             "user_id":      sessionManager.userId,
             "session_id":   sessionManager.sessionId,
