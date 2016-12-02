@@ -136,7 +136,7 @@ import Foundation
     // MARK: - FunPlusData
     
     @objc public class func traceDataCustom(eventString: String) {
-        guard let data = eventString.data(using: String.Encoding.utf8) else {
+        guard let data = eventString.data(using: .utf8) else {
             print("[FunPlusSDK] Invalid custom event string")
             return
         }
@@ -156,7 +156,7 @@ import Foundation
     }
     
     @objc public class func traceDataCustom(eventName: String, propertiesString: String) {
-        guard let data = propertiesString.data(using: String.Encoding.utf8) else {
+        guard let data = propertiesString.data(using: .utf8) else {
             print("[FunPlusSDK] Invalid custom event properties string")
             return
         }

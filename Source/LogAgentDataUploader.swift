@@ -72,7 +72,7 @@ class LogAgentDataUploader {
         let batch = subArray.map { item -> String in
             do {
                 let data = try JSONSerialization.data(withJSONObject: item, options: [])
-                if let json = String(data: data, encoding: String.Encoding.utf8) {
+                if let json = String(data: data, encoding: .utf8) {
                     return json
                 } else {
                     return ""

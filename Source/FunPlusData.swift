@@ -14,7 +14,7 @@ private extension String {
     var custom: String { return "\(self).custom" }
     
     func toJsonObject() -> Any? {
-        guard let data = self.data(using: String.Encoding.utf8) else { return nil }
+        guard let data = self.data(using: .utf8) else { return nil }
         
         do {
             return try JSONSerialization.jsonObject(with: data, options: [])

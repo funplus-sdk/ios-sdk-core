@@ -190,7 +190,7 @@ class PassportClient {
         
         let s = arr.joined(separator: "&")
         let hex = try! HMAC(key: [UInt8](funPlusConfig.appKey.utf8), variant: .sha256).authenticate([UInt8](s.utf8)).toHexString()
-        return hex.data(using: String.Encoding.utf8)!.base64EncodedString()
+        return hex.data(using: .utf8)!.base64EncodedString()
     }
     
     func getLogger() -> Logger {
