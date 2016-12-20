@@ -69,7 +69,7 @@ let ENV = SDKEnvironment.sandbox	// sandbox/production
 let funPlusConfig = FunPlusConfig(appId: APP_ID, appKey: APP_KEY, rumTag: RUM_TAG, rumKey: RUM_KEY, environment: ENV)
 
 funPlusConfig.setRumUploadInterval(10)
-             .setAutoSessionStartAndEnd(false)
+             .setDataAutoTraceSessionEvents(false)
              .end()
 
 FunPlusSDK.install(funPlusConfig: funPlusConfig)
@@ -77,15 +77,15 @@ FunPlusSDK.install(funPlusConfig: funPlusConfig)
 
 Here's all the config values that can be overrided.
 
-| name                   | type     | description                              |
-| ---------------------- | -------- | ---------------------------------------- |
-| rumUploadInterval      | Int64    | This value indicates a time interval to trigger a RUM events uploading process. Default is 30. |
-| rumSampleRate          | Double   | This value indicates percentage of RUM events to be traced for sampling. Default is 1.0. |
-| rumEventWhitelist      | [String] | RUM events in this array will always be traced. Default is an empty array. |
-| rumUserWhitelist       | [String] | RUM events produced by users in this array will always be traced. Default is an empty array. |
-| rumUserBlacklist       | [String] | RUM events produced by users in this array will never be traced. `rumUesrWhitelist` will be checked before this array. Default is an empty array. |
-| dataUploadInterval     | Int64    | This value indicates a time interval to trigger a Data events uploading process. Default is 30. |
-| autoSessionStartAndEnd | Bool     | If set true, SDK will automatically trigger session starting and session ending. Default is true. |
+| name                       | type     | description                              |
+| -------------------------- | -------- | ---------------------------------------- |
+| rumUploadInterval          | Int64    | This value indicates a time interval to trigger a RUM events uploading process. Default is 30. |
+| rumSampleRate              | Double   | This value indicates percentage of RUM events to be traced for sampling. Default is 1.0. |
+| rumEventWhitelist          | [String] | RUM events in this array will always be traced. Default is an empty array. |
+| rumUserWhitelist           | [String] | RUM events produced by users in this array will always be traced. Default is an empty array. |
+| rumUserBlacklist           | [String] | RUM events produced by users in this array will never be traced. `rumUesrWhitelist` will be checked before this array. Default is an empty array. |
+| dataUploadInterval         | Int64    | This value indicates a time interval to trigger a Data events uploading process. Default is 30. |
+| dataAutoTraceSessionEvents | Bool     | If set true, SDK will automatically trace `session_start` and `session_end` events. Default is true. |
 
 ## Usage
 
@@ -221,6 +221,20 @@ FunPlusSDK.getFunPlusData().traceCustom(eventName:, properties:)
 FunPlusSDK.getFunPlusData().setExtraProperty(key: "{key}", value: "{value}");
 FunPlusSDK.getFunPlusData().eraseExtraProperty(key: "{key}");
 ```
+
+### Manually trace session events
+
+By default, SDK automatically traces the `session_start` and `session_end` events. This behavior can be changed by override the `dataAutoTraceSessionEvents` config value to false.
+
+Then you need to manually trace these events.
+
+```swift
+FunPlusSDK.getFunPlusData().traceSessionStart()
+...
+FunPlusSDK.getFunPlusData().traceSessionEnd(sessionLength:)
+```
+
+Note that don't manually trace these events when `dataAutoTraceSessionEvents` is set to true.
 
 ## FAQ
 
