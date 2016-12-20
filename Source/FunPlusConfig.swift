@@ -25,26 +25,28 @@ public class FunPlusConfig {
     let loggerTag: String
     let loggerKey: String
     let logLevel: LogLevel
-    let loggerUploadInterval: Int64
+    var loggerUploadInterval: Int64
     
     let rumEndpoint: String
     let rumTag: String
     let rumKey: String
-    let rumUploadInterval: Int64
+    var rumUploadInterval: Int64
     
-    let rumSampleRate: Double
-    let rumEventWhitelist: [String]
-    let rumUserWhitelist: [String]
-    let rumUserBlacklist: [String]
+    var rumSampleRate: Double
+    var rumEventWhitelist: [String]
+    var rumUserWhitelist: [String]
+    var rumUserBlacklist: [String]
     
     let dataEndpoint: String
     let dataTag: String
     let dataKey: String
-    let dataUploadInterval: Int64
+    var dataUploadInterval: Int64
+
+    var autoSessionStartAndEnd: Bool
     
     // MARK: - Init
     
-    init(appId: String, appKey: String, rumTag: String, rumKey: String, environment: SDKEnvironment) {
+    public init(appId: String, appKey: String, rumTag: String, rumKey: String, environment: SDKEnvironment) {
         self.appId = appId
         self.appKey = appKey
         self.environment = environment
@@ -71,6 +73,8 @@ public class FunPlusConfig {
         self.dataTag = appId
         self.dataKey = appKey
         self.dataUploadInterval = 30    // 30 sec
+        
+        self.autoSessionStartAndEnd = true
     }
     
     // Deprecated
@@ -129,5 +133,55 @@ public class FunPlusConfig {
         self.dataTag = dataTag
         self.dataKey = dataKey
         self.dataUploadInterval = configDict["data_upload_interval"] as? Int64 ?? 10
+        
+        self.autoSessionStartAndEnd = true
+    }
+    
+    public func setLoggerUploadInterval(_ value: Int64) -> FunPlusConfig {
+        loggerUploadInterval = value
+        return self
+    }
+    
+    public func setRumUploadInterval(_ value: Int64) -> FunPlusConfig {
+        rumUploadInterval = value
+        return self
+    }
+    
+    public func setRumSampleRate(_ value: Double) -> FunPlusConfig {
+        rumSampleRate = value
+        return self
+    }
+    
+    public func setRumEventWhitelist(_ value: [String]) -> FunPlusConfig {
+        rumEventWhitelist = value
+        return self
+    }
+    
+    public func setRumUserWhitelist(_ value: [String]) -> FunPlusConfig {
+        rumUserWhitelist = value
+        return self
+    }
+    
+    public func setRumUserBlacklist(_ value: [String]) -> FunPlusConfig {
+        rumUserBlacklist = value
+        return self
+    }
+    
+    public func setDataUploadInterval(_ value: Int64) -> FunPlusConfig {
+        dataUploadInterval = value
+        return self
+    }
+    
+    public func setAutoSessionStartAndEnd(_ value: Bool) -> FunPlusConfig {
+        autoSessionStartAndEnd = value
+        return self
+    }
+    
+    ///
+    /// This method should be called at the end of the settings chain,
+    /// in order to avoid compiler's "unused returning value" warning.
+    ///
+    public func end() {
+        // Do nothing
     }
 }

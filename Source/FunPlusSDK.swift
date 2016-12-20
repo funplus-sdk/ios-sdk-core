@@ -40,7 +40,6 @@ public class FunPlusSDK {
     
     // MARK: - Install & Init
     
-    // Deprecated
     public class func install(funPlusConfig: FunPlusConfig) {
         if instance == nil {
             print("[FunPlusSDK] Installing FunPlus SDK: {sdkVersion=\(FunPlusSDK.VERSION), appId=\(funPlusConfig.appId), env=\(funPlusConfig.environment)}")

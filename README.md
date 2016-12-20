@@ -37,22 +37,55 @@
 
 ### Install the SDK
 
-Modify your `AppDelegate.swift` file as below code snippet demonstrates.
+Put the following initialization codes in your project. Usually the `application:didFinishLaunchingWithOptions` delegate method is a good place to put the codes in.
 
 ```swift
 import FunPlusSDK
 
-let APP_ID = "test"
-let APP_KEY = "funplus"
+let APP_ID = "{YourAppId}"
+let APP_KEY = "{YourAppKey}"
 let RUM_TAG = "{YourRumTag}"
 let RUM_KEY = "{YourRumKey}"
 let ENV = SDKEnvironment.sandbox	// sandbox/production
 
-func application(_ application: UIApplication, didFinishLaunchingWithOptions
-	launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-    FunPlusSDK.install(appId: APP_ID, appKey: APP_KEY, rumTag: RUM_TAG, rumKey: RUM_KEY, environment: ENV)
-}
+FunPlusSDK.install(appId: APP_ID, appKey: APP_KEY, rumTag: RUM_TAG, rumKey: RUM_KEY, environment: ENV)
 ```
+
+Now you've done initializing the SDK.
+
+### Config the SDK
+
+You may want to override SDK's default config values. In such a case, you need to initialize the SDK in a different way, as the following code snippet illustrates.
+
+```swift
+import FunPlusSDK
+
+let APP_ID = "{YourAppId}"
+let APP_KEY = "{YourAppKey}"
+let RUM_TAG = "{YourRumTag}"
+let RUM_KEY = "{YourRumKey}"
+let ENV = SDKEnvironment.sandbox	// sandbox/production
+
+let funPlusConfig = FunPlusConfig(appId: APP_ID, appKey: APP_KEY, rumTag: RUM_TAG, rumKey: RUM_KEY, environment: ENV)
+
+funPlusConfig.setRumUploadInterval(10)
+             .setAutoSessionStartAndEnd(false)
+             .end()
+
+FunPlusSDK.install(funPlusConfig: funPlusConfig)
+```
+
+Here's all the config values that can be overrided.
+
+| name                   | type     | description                              |
+| ---------------------- | -------- | ---------------------------------------- |
+| rumUploadInterval      | Int64    | This value indicates a time interval to trigger a RUM events uploading process. Default is 30. |
+| rumSampleRate          | Double   | This value indicates percentage of RUM events to be traced for sampling. Default is 1.0. |
+| rumEventWhitelist      | [String] | RUM events in this array will always be traced. Default is an empty array. |
+| rumUserWhitelist       | [String] | RUM events produced by users in this array will always be traced. Default is an empty array. |
+| rumUserBlacklist       | [String] | RUM events produced by users in this array will never be traced. `rumUesrWhitelist` will be checked before this array. Default is an empty array. |
+| dataUploadInterval     | Int64    | This value indicates a time interval to trigger a Data events uploading process. Default is 30. |
+| autoSessionStartAndEnd | Bool     | If set true, SDK will automatically trigger session starting and session ending. Default is true. |
 
 ## Usage
 
