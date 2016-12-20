@@ -17,7 +17,7 @@ class OCExposerTests: XCTestCase {
     let RUM_KEY = "funplus"
     let ENV = "sandbox"
     
-    func testWithConfigValues() {
+    func testInstallWithConfigValues() {
         // Given
         let loggerUploadInterval: Int64 = 10
         let rumUploadInterval: Int64 = 5
