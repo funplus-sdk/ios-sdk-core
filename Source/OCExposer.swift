@@ -52,6 +52,69 @@ import Foundation
         )
     }
     
+    @objc public class func install(
+        appId: String,
+        appKey: String,
+        rumTag: String,
+        rumKey: String,
+        environment: String,
+        loggerUploadInterval: Int64,
+        rumUploadInterval: Int64,
+        rumSampleRate: Double,
+        rumEventWhitelistString: String,
+        rumUserWhitelistString: String,
+        rumUserBlacklistString: String,
+        dataUploadInterval: Int64,
+        dataAutoTraceSessionEvents: Bool)
+    {
+        guard let env = SDKEnvironment(rawValue: environment) else {
+            print("[FunPlusSDK] Cannot resolve the `environment` parameter")
+            return
+        }
+        
+        guard
+            let rumEventWhitelistData = rumEventWhitelistString.data(using: .utf8),
+            let rumUserWhitelistData = rumUserWhitelistString.data(using: .utf8),
+            let rumUserBlacklistData = rumUserBlacklistString.data(using: .utf8)
+        else {
+            print("[FunPlusSDK] Invalid parameter(s)")
+            return
+        }
+        
+        do {
+            guard
+                let rumEventWhitelist = try JSONSerialization.jsonObject(with: rumEventWhitelistData, options: []) as? [String],
+                let rumUserWhitelist = try JSONSerialization.jsonObject(with: rumUserWhitelistData, options: []) as? [String],
+                let rumUserBlacklist = try JSONSerialization.jsonObject(with: rumUserBlacklistData, options: []) as? [String]
+            else {
+                print("[FunPlusSDK] Invalid parameter(s)")
+                return
+            }
+            
+            let funPlusConfig = FunPlusConfig(
+                appId: appId,
+                appKey: appKey,
+                rumTag: rumTag,
+                rumKey: rumKey,
+                environment: env
+            )
+            
+            funPlusConfig.setLoggerUploadInterval(loggerUploadInterval)
+                        .setRumUploadInterval(rumUploadInterval)
+                        .setRumSampleRate(rumSampleRate)
+                        .setRumEventWhitelist(rumEventWhitelist)
+                        .setRumUserWhitelist(rumUserWhitelist)
+                        .setRumUserBlacklist(rumUserBlacklist)
+                        .setDataUploadInterval(dataUploadInterval)
+                        .setDataAutoTraceSessionEvents(dataAutoTraceSessionEvents)
+                        .end()
+            
+            FunPlusSDK.install(funPlusConfig: funPlusConfig)
+        } catch let e {
+            print("[FunPlusSDK] Invalid parameter(s), error: \(e)")
+        }
+    }
+
     @objc public class func getSessionId() -> String {
         return FunPlusSDK.getSessionManager().sessionId
     }
