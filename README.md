@@ -12,6 +12,7 @@
 * [Integration](#integration)
   * [Add the SDK to Your Project](#add-the-sdk-to-your-project)
   * [Install the SDK](#install-the-sdk)
+  * [Config the SDK](#config-the-sdk)
 * [Usage](#usage)
   * [The ID Module](#the-id-module)
     - [Get an FPID Based on a Given User ID](get-an-fpid-based-on-a-given-user-id)
@@ -22,6 +23,7 @@
   * [The Data Module](#the-data-module)
     - [Trace Custom Events](#trace-custom-events)
     - [Set Extra Properties to Data Events](#set-extra-properties-to-data-events)
+    - [Manually trace session events](#manually-trace-session-events)
 * [FAQ](#faq)
 
 ## Integration
@@ -222,7 +224,7 @@ FunPlusSDK.getFunPlusData().setExtraProperty(key: "{key}", value: "{value}");
 FunPlusSDK.getFunPlusData().eraseExtraProperty(key: "{key}");
 ```
 
-### Manually trace session events
+#### Manually trace session events
 
 By default, SDK automatically traces the `session_start` and `session_end` events. This behavior can be changed by override the `dataAutoTraceSessionEvents` config value to false.
 
