@@ -42,7 +42,7 @@ public class FunPlusConfig {
     let dataKey: String
     var dataUploadInterval: Int64
 
-    var autoSessionStartAndEnd: Bool
+    var dataAutoTraceSessionEvents: Bool
     
     // MARK: - Init
     
@@ -74,7 +74,7 @@ public class FunPlusConfig {
         self.dataKey = appKey
         self.dataUploadInterval = 30    // 30 sec
         
-        self.autoSessionStartAndEnd = true
+        self.dataAutoTraceSessionEvents = true
     }
     
     // Deprecated
@@ -134,7 +134,7 @@ public class FunPlusConfig {
         self.dataKey = dataKey
         self.dataUploadInterval = configDict["data_upload_interval"] as? Int64 ?? 10
         
-        self.autoSessionStartAndEnd = true
+        self.dataAutoTraceSessionEvents = true
     }
     
     public func setLoggerUploadInterval(_ value: Int64) -> FunPlusConfig {
@@ -172,8 +172,8 @@ public class FunPlusConfig {
         return self
     }
     
-    public func setAutoSessionStartAndEnd(_ value: Bool) -> FunPlusConfig {
-        autoSessionStartAndEnd = value
+    public func setDataAutoTraceSessionEvents(_ value: Bool) -> FunPlusConfig {
+        dataAutoTraceSessionEvents = value
         return self
     }
     

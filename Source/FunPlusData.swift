@@ -127,7 +127,9 @@ public class FunPlusData: SessionStatusChangeListener {
         
         extraProperties = UserDefaults.standard.dictionary(forKey: FunPlusData.EXTRA_PROPERTIES_SAVED_KEY) as? [String: String] ?? [:]
         
-        FunPlusFactory.getSessionManager(funPlusConfig: funPlusConfig).registerListener(listener: self)
+        if funPlusConfig.dataAutoTraceSessionEvents {
+            FunPlusFactory.getSessionManager(funPlusConfig: funPlusConfig).registerListener(listener: self)
+        }
         
         getLogger().i("FunPlusData ready to work")
     }

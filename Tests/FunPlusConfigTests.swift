@@ -52,7 +52,7 @@ class FunPlusConfigTests: XCTestCase {
         XCTAssertEqual(config.dataKey, APP_KEY, "dataKey should be \(APP_KEY)")
         XCTAssertEqual(config.dataUploadInterval, DEFAULT_DATA_UPLOAD_INTERVAL, "dataUploadInterval should be \(DEFAULT_DATA_UPLOAD_INTERVAL)")
         
-        XCTAssertTrue(config.autoSessionStartAndEnd, "autoSessionStartAndEnd should be true")
+        XCTAssertTrue(config.dataAutoTraceSessionEvents, "dataAutoTraceSessionEvents should be true")
     }
     
     func testDefaultValuesForProductionEnvironment() {
@@ -85,7 +85,7 @@ class FunPlusConfigTests: XCTestCase {
         XCTAssertEqual(config.dataKey, APP_KEY, "dataKey should be \(APP_KEY)")
         XCTAssertEqual(config.dataUploadInterval, DEFAULT_DATA_UPLOAD_INTERVAL, "dataUploadInterval should be \(DEFAULT_DATA_UPLOAD_INTERVAL)")
         
-        XCTAssertTrue(config.autoSessionStartAndEnd, "autoSessionStartAndEnd should be true")
+        XCTAssertTrue(config.dataAutoTraceSessionEvents, "dataAutoTraceSessionEvents should be true")
     }
     
     func testSettersChain() {
@@ -107,7 +107,7 @@ class FunPlusConfigTests: XCTestCase {
             .setRumUserWhitelist(rumUserWhitelist)
             .setRumUserBlacklist(rumUserBlacklist)
             .setDataUploadInterval(dataUploadInterval)
-            .setAutoSessionStartAndEnd(false)
+            .setDataAutoTraceSessionEvents(false)
             .end()
         
         // Then
@@ -136,7 +136,7 @@ class FunPlusConfigTests: XCTestCase {
         XCTAssertEqual(config.dataKey, APP_KEY, "dataKey should be \(APP_KEY)")
         XCTAssertEqual(config.dataUploadInterval, dataUploadInterval, "dataUploadInterval should be \(dataUploadInterval)")
         
-        XCTAssertFalse(config.autoSessionStartAndEnd, "autoSessionStartAndEnd should be false")
+        XCTAssertFalse(config.dataAutoTraceSessionEvents, "dataAutoTraceSessionEvents should be false")
     }
 
 }
