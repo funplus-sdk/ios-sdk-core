@@ -157,15 +157,19 @@ class LogAgentClient {
             
             self.isUploading = true
             
-            self.uploader.upload(data: &self.dataQueue) { [unowned self] uploaded in
-                self.serialQueue.sync(execute: {
-                    self.dataQueue.removeSubrange(0..<uploaded)
-                    self.isUploading = false
+            self.uploader.upload(data: &self.dataQueue) { [weak self] uploaded in
+                guard let that = self else { return }
+                
+                that.serialQueue.sync(execute: {
+                    guard uploaded <= that.dataQueue.count else { return }
                     
+                    that.dataQueue.removeSubrange(0..<uploaded)
+                    that.isUploading = false
+                
                     if uploaded == 0 {
-                        self.progress?(false, 0, 0)
+                        that.progress?(false, 0, 0)
                     } else {
-                        self.progress?(true, uploaded, uploaded)
+                        that.progress?(true, uploaded, uploaded)
                     }
                 })
             }
