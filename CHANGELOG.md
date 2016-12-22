@@ -1,5 +1,11 @@
 # Changelog
 
+### v4.0.5-alpha.0
+
+* Bugfix #12. However the fix might not work since the root cause of #12 still remains unclear.
+
+Use this version in caution.
+
 ### v4.0.4-alpha.2
 
 * Milliseconds for RUM and Data events.
