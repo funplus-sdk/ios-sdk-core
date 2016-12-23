@@ -129,7 +129,7 @@ class LogAgentClient {
         - parameter entry: The entry to be traced.
      */
     func trace(entry: [String: Any]) {
-        serialQueue.sync {
+        serialQueue.async {
             if (self.dataQueue.count >= LogAgentClient.MAX_QUEUE_SIZE) {
                 self.dataQueue.remove(at: 0)
             }
@@ -152,7 +152,7 @@ class LogAgentClient {
         Submit an upload process.
      */
     func upload() {
-        serialQueue.sync {
+        serialQueue.async {
             guard !self.isUploading && !self.isOffline && self.dataQueue.count > 0 else { return }
             
             self.isUploading = true
@@ -160,7 +160,7 @@ class LogAgentClient {
             self.uploader.upload(data: &self.dataQueue) { [weak self] uploaded in
                 guard let that = self else { return }
                 
-                that.serialQueue.sync(execute: {
+                that.serialQueue.async(execute: {
                     guard uploaded <= that.dataQueue.count else { return }
                     
                     that.dataQueue.removeSubrange(0..<uploaded)
@@ -255,7 +255,7 @@ class LogAgentClient {
         
         executeBackgroundTask()
         
-        serialQueue.sync {
+        serialQueue.async {
             if let backgroundTaskId = self.backgroundTaskId {
                 app.endBackgroundTask(backgroundTaskId)
                 self.backgroundTaskId = UIBackgroundTaskInvalid
@@ -268,7 +268,7 @@ class LogAgentClient {
     @objc func appWillEnterForeground() {
         let app = UIApplication.shared
         
-        serialQueue.sync {
+        serialQueue.async {
             if let backgroundTaskId = self.backgroundTaskId {
                 app.endBackgroundTask(backgroundTaskId)
                 self.backgroundTaskId = UIBackgroundTaskInvalid
