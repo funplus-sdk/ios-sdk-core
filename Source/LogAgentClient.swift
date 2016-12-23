@@ -59,12 +59,6 @@ class LogAgentClient {
     /// The identifier of background task used by currnet `LogAgentClient` instance.
     var backgroundTaskId: UIBackgroundTaskIdentifier?
     
-    /// Indicates if network is reachable.
-    var isOffline: Bool = false
-    
-    /// Indicates if any upload progress is underlying.
-    var isUploading: Bool = false
-    
     /// The periodically callback when data is being uploaded.
     var progress: ProgressHandler?
     
@@ -111,13 +105,11 @@ class LogAgentClient {
         networkReachabilityManager = NetworkReachabilityManager()
         
         registerNotificationObservers()
-        registerNetworkListener()
         startTimer()
     }
     
     deinit {
         stopTimer()
-        unregisterNetworkListener()
         unregisterNotificationObservers()
     }
     
@@ -153,25 +145,21 @@ class LogAgentClient {
      */
     func upload() {
         serialQueue.async {
-            guard !self.isUploading && !self.isOffline && self.dataQueue.count > 0 else { return }
+            guard self.dataQueue.count > 0 else { return }
             
-            self.isUploading = true
+            let batchSize = min(self.dataQueue.count, LogAgentDataUploader.MAX_BATCH_SIZE)
+            let data = Array(self.dataQueue[0..<batchSize])
+            self.dataQueue.removeSubrange(0..<batchSize)
             
-            self.uploader.upload(data: &self.dataQueue) { [weak self] uploaded in
+            self.uploader.upload(data: data) { [weak self] status in
                 guard let that = self else { return }
                 
-                that.serialQueue.async(execute: {
-                    guard uploaded <= that.dataQueue.count else { return }
-                    
-                    that.dataQueue.removeSubrange(0..<uploaded)
-                    that.isUploading = false
-                
-                    if uploaded == 0 {
-                        that.progress?(false, 0, 0)
-                    } else {
-                        that.progress?(true, uploaded, uploaded)
-                    }
-                })
+                if status {
+                    that.progress?(true, batchSize, batchSize)
+                } else {
+                    that.progress?(false, 0, 0)
+                    that.trace(entries: data)
+                }
             }
         }
     }
@@ -300,30 +288,5 @@ class LogAgentClient {
      */
     fileprivate func unregisterNotificationObservers() {
         NotificationCenter.default.removeObserver(self)
-    }
-    
-    // MARK: - Network Listener
-    
-    /**
-        Register an network listener.
-     */
-    fileprivate func registerNetworkListener() {
-        networkReachabilityManager?.listener = { status in
-            switch status {
-            case .reachable:
-                self.isOffline = false
-            case .notReachable, .unknown:
-                self.isOffline = true
-            }
-        }
-        
-        networkReachabilityManager?.startListening()
-    }
-    
-    /**
-        Unregister the network listener.
-     */
-    fileprivate func unregisterNetworkListener() {
-        networkReachabilityManager?.stopListening()
     }
 }

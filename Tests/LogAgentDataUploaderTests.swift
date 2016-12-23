@@ -31,11 +31,11 @@ class LogAgentDataUploaderTests: XCTestCase {
         
         let ex = expectation(description: "\(uploader)")
         
-        var resultUploaded: Int!
+        var status: Bool = false
         
         // When
-        uploader.upload(data: &dataQueue) { (uploaded) in
-            resultUploaded = uploaded
+        uploader.upload(data: dataQueue) { (s) in
+            status = s
             
             ex.fulfill()
         }
@@ -43,7 +43,7 @@ class LogAgentDataUploaderTests: XCTestCase {
         waitForExpectations(timeout: TIMEOUT, handler: nil)
         
         // Then
-        XCTAssertEqual(resultUploaded, testCount, "uploaded should be \(testCount)")
+        XCTAssertTrue(status, "uploaded should be successful")
     }
     
     func testUploadWithBadLogAgentTag() {
@@ -59,11 +59,11 @@ class LogAgentDataUploaderTests: XCTestCase {
         
         let ex = expectation(description: "\(uploader)")
         
-        var resultUploaded: Int!
+        var status: Bool = true
         
         // When
-        uploader.upload(data: &dataQueue) { (uploaded) in
-            resultUploaded = uploaded
+        uploader.upload(data: dataQueue) { (s) in
+            status = s
             
             ex.fulfill()
         }
@@ -71,7 +71,7 @@ class LogAgentDataUploaderTests: XCTestCase {
         waitForExpectations(timeout: TIMEOUT, handler: nil)
         
         // Then
-        XCTAssertEqual(resultUploaded, 0, "uploaded should be 0")
+        XCTAssertFalse(status, "uploaded should be failed")
     }
 
     func testNetworkOff() {
@@ -87,11 +87,11 @@ class LogAgentDataUploaderTests: XCTestCase {
         
         let ex = expectation(description: "\(uploader)")
         
-        var resultUploaded: Int!
+        var status: Bool = true
         
         // When
-        uploader.upload(data: &dataQueue) { (uploaded) in
-            resultUploaded = uploaded
+        uploader.upload(data: dataQueue) { (s) in
+            status = s
             
             ex.fulfill()
         }
@@ -99,6 +99,6 @@ class LogAgentDataUploaderTests: XCTestCase {
         waitForExpectations(timeout: TIMEOUT, handler: nil)
         
         // Then
-        XCTAssertEqual(resultUploaded, 0, "uploaded should be 0")
+        XCTAssertFalse(status, "uploaded should be failed")
     }
 }

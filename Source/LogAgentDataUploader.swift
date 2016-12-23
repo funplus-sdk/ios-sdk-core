@@ -16,7 +16,7 @@ class LogAgentDataUploader {
     // MARK: - Properties
     
     /// Max size of an upload batch.
-    let MAX_BATCH_SIZE = 100
+    static let MAX_BATCH_SIZE = 100
     
     /// The configurations.
     let funPlusConfig: FunPlusConfig
@@ -58,16 +58,16 @@ class LogAgentDataUploader {
         - parameter data:       The data set to be uploaded.
         - parameter completion: The completion callback.
      */
-    func upload(data: inout [[String: Any]], completion: @escaping (Int) -> Void) {
+    func upload(data: [[String: Any]], completion: @escaping (Bool) -> Void) {
         let total = data.count
         
         guard total > 0 else {
-            completion(0)
+            completion(false)
             return
         }
         
         // Batch size must not exceed MAX_BATCH_SIZE.
-        let batchSize = min(total, MAX_BATCH_SIZE)
+        let batchSize = min(total, LogAgentDataUploader.MAX_BATCH_SIZE)
         let subArray = Array(data[0..<batchSize])
         let batch = subArray.map { item -> String in
             do {
@@ -88,7 +88,7 @@ class LogAgentDataUploader {
         let requestBody = batch.joined(separator: "\n").data(using: String.Encoding.utf8)
 
         LogAgentDataUploader.request(url: url, data: requestBody!) { status in
-            completion(status ? batchSize : 0)
+            completion(status)
         }
     }
     
@@ -103,7 +103,7 @@ class LogAgentDataUploader {
     private class func request(
         url: String,
         data: Data,
-        completion: @escaping (_ status: Bool) -> ())
+        completion: @escaping (Bool) -> ())
     {
         // Compose the URL.
         guard let url = URL(string: url) else {
