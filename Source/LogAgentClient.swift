@@ -27,7 +27,7 @@ class LogAgentClient {
     // MARK: - Properties
     
     /// The max allowed size of data queue.
-    static let MAX_QUEUE_SIZE = 1024
+    static let MAX_QUEUE_SIZE = 5000
     
     /// The SDK configurations.
     let funPlusConfig: FunPlusConfig

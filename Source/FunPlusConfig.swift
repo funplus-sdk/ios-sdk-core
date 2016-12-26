@@ -62,7 +62,7 @@ public class FunPlusConfig {
         self.rumEndpoint = FunPlusConfig.LOG_SERVER
         self.rumTag = rumTag
         self.rumKey = rumKey
-        self.rumUploadInterval = 30     // 30 sec
+        self.rumUploadInterval = environment == .sandbox ? 5 : 10
         
         self.rumSampleRate = 1.0
         self.rumEventWhitelist = []
@@ -72,7 +72,7 @@ public class FunPlusConfig {
         self.dataEndpoint = FunPlusConfig.LOG_SERVER
         self.dataTag = appId
         self.dataKey = appKey
-        self.dataUploadInterval = 30    // 30 sec
+        self.dataUploadInterval = environment == .sandbox ? 5 : 10
         
         self.dataAutoTraceSessionEvents = true
     }
