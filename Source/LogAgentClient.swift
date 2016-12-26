@@ -14,11 +14,10 @@ import UIKit
 /**
     The `ProgressHandler` is used as callback function when data is being uploaded.
  
-    - parameter status:     The status of this uploading process.
-    - parameter total:      The total count of logs.
-    - parameter uploaded:   The count of logs uploaded.
+    - parameter remaining:  count of remaining logs.
+    - parameter uploaded:   Count of uploaded logs.
  */
-typealias ProgressHandler = (_ status: Bool, _ total: Int, _ uploaded: Int) -> Void
+typealias ProgressHandler = (_ remaining: Int, _ uploaded: Int) -> Void
 
 // MARK: - LogAgentClient
 
@@ -149,9 +148,9 @@ class LogAgentClient {
                     guard let that = self else { return }
                     
                     if status {
-                        that.progress?(true, batchSize, batchSize)
+                        that.progress?(that.dataQueue.count, batchSize)
                     } else {
-                        that.progress?(false, 0, 0)
+                        that.progress?(that.dataQueue.count + batchSize, 0)
                         that.trace(entries: data)
                     }
                 }
