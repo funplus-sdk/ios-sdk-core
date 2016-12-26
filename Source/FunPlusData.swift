@@ -92,7 +92,7 @@ public class FunPlusData: SessionStatusChangeListener {
         
         kpiLogAgentClient = LogAgentClient(
             funPlusConfig: funPlusConfig,
-            label: label,
+            label: "\(label).core",
             endpoint: endpoint,
             tag: tag.core,
             key: key,
@@ -103,7 +103,7 @@ public class FunPlusData: SessionStatusChangeListener {
         )
         customLogAgentClient = LogAgentClient(
             funPlusConfig: funPlusConfig,
-            label: label,
+            label: "\(label).custom",
             endpoint: endpoint,
             tag: tag.custom,
             key: key,
