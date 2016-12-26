@@ -9,6 +9,19 @@
 import XCTest
 @testable import FunPlusSDK
 
+class RUMEventListener : RUMEventTracedListener {
+    var traceHistory = [(eventString: String, traceTime: Date)]()
+    var suppressHistory = [(eventString: String, traceTime: Date)]()
+    
+    func eventTraced(event: [String: Any]) {
+        traceHistory.append(eventString: event.description, traceTime: Date())
+    }
+    
+    func eventSuppressed(event: [String: Any]) {
+        suppressHistory.append(eventString: event.description, traceTime: Date())
+    }
+}
+
 class FunPlusRUMTests: XCTestCase {
     
     let TIMEOUT = 10.0
@@ -18,16 +31,22 @@ class FunPlusRUMTests: XCTestCase {
     func testTrace() {
         // Given, When
         let tracer = FunPlusRUM(funPlusConfig: funPlusConfig)
+        let listener = RUMEventListener()
+        tracer.registerEventTracedListener(listener: listener)
+        
         tracer.traceAppBackground()
         
         // Then
-        XCTAssertEqual(tracer.traceHistory.count, 1, "traceHistory.count should be 1")
-        XCTAssertTrue(tracer.traceHistory[0].eventString.contains("app_background"), "event should be app_background")
+        XCTAssertEqual(listener.traceHistory.count, 1, "traceHistory.count should be 1")
+        XCTAssertTrue(listener.traceHistory[0].eventString.contains("app_background"), "event should be app_background")
     }
     
     func testTraceNetworkSwtich() {
         // Given
         let tracer = FunPlusRUM(funPlusConfig: funPlusConfig)
+        let listener = RUMEventListener()
+        tracer.registerEventTracedListener(listener: listener)
+        
         let sourceState = "3G"
         let currentState = "Wifi"
         
@@ -35,13 +54,16 @@ class FunPlusRUMTests: XCTestCase {
         tracer.traceNetworkSwitch(sourceState: sourceState, currentState: currentState)
         
         // Then
-        XCTAssertEqual(tracer.traceHistory.count, 1, "traceHistory.count should be 1")
-        XCTAssertTrue(tracer.traceHistory[0].eventString.contains("network_switch"), "event should be network_switch")
+        XCTAssertEqual(listener.traceHistory.count, 1, "traceHistory.count should be 1")
+        XCTAssertTrue(listener.traceHistory[0].eventString.contains("network_switch"), "event should be network_switch")
     }
     
     func testTraceServiceMonitoring() {
         // Given
         let tracer = FunPlusRUM(funPlusConfig: funPlusConfig)
+        let listener = RUMEventListener()
+        tracer.registerEventTracedListener(listener: listener)
+        
         let serviceName = "testservice"
         let httpUrl = "http://url.com"
         let httpStatus = "200"
@@ -70,13 +92,16 @@ class FunPlusRUMTests: XCTestCase {
         )
         
         // Then
-        XCTAssertEqual(tracer.traceHistory.count, 1, "traceHistory.count should be 1")
-        XCTAssertTrue(tracer.traceHistory[0].eventString.contains("service_monitoring"), "event should be service_monitoring")
+        XCTAssertEqual(listener.traceHistory.count, 1, "traceHistory.count should be 1")
+        XCTAssertTrue(listener.traceHistory[0].eventString.contains("service_monitoring"), "event should be service_monitoring")
     }
     
     func testAppDidBecomeActive() {
         // Given
         let tracer = FunPlusRUM(funPlusConfig: funPlusConfig)
+        let listener = RUMEventListener()
+        tracer.registerEventTracedListener(listener: listener)
+        
         let ex = expectation(description: "\(tracer)")
         
         // When
@@ -89,13 +114,16 @@ class FunPlusRUMTests: XCTestCase {
         waitForExpectations(timeout: TIMEOUT, handler: nil)
         
         // Then
-        XCTAssertEqual(tracer.traceHistory.count, 1, "traceHistory.count should be 1")
-        XCTAssertTrue(tracer.traceHistory[0].eventString.contains("app_foreground"), "event should be app_foreground")
+        XCTAssertEqual(listener.traceHistory.count, 1, "traceHistory.count should be 1")
+        XCTAssertTrue(listener.traceHistory[0].eventString.contains("app_foreground"), "event should be app_foreground")
     }
     
     func testAppDidEnterBackground() {
         // Given
         let tracer = FunPlusRUM(funPlusConfig: funPlusConfig)
+        let listener = RUMEventListener()
+        tracer.registerEventTracedListener(listener: listener)
+        
         let ex = expectation(description: "\(tracer)")
         
         // When
@@ -109,20 +137,22 @@ class FunPlusRUMTests: XCTestCase {
         waitForExpectations(timeout: TIMEOUT, handler: nil)
         
         // Then
-        XCTAssertEqual(tracer.traceHistory.count, 2, "traceHistory.count should be 2")
-        XCTAssertTrue(tracer.traceHistory[0].eventString.contains("app_foreground"), "app_foreground should be app_foreground")
-        XCTAssertTrue(tracer.traceHistory[1].eventString.contains("app_background"), "app_foreground should be app_background")
+        XCTAssertEqual(listener.traceHistory.count, 2, "traceHistory.count should be 2")
+        XCTAssertTrue(listener.traceHistory[0].eventString.contains("app_foreground"), "app_foreground should be app_foreground")
+        XCTAssertTrue(listener.traceHistory[1].eventString.contains("app_background"), "app_foreground should be app_background")
     }
     
     func testSuppressHistory() {
         // Given
         let tracer = FunPlusRUM(funPlusConfig: FunPlusConfigFactory.rumSampleRateZeroConfig())
+        let listener = RUMEventListener()
+        tracer.registerEventTracedListener(listener: listener)
         
         // When
         tracer.traceAppBackground()
         
         // Then
-        XCTAssertEqual(tracer.suppressHistory.count, 1, "suppressHistory.count should be 1")
-        XCTAssertTrue(tracer.suppressHistory[0].eventString.contains("app_background"), "event should be app_background")
+        XCTAssertEqual(listener.suppressHistory.count, 1, "suppressHistory.count should be 1")
+        XCTAssertTrue(listener.suppressHistory[0].eventString.contains("app_background"), "event should be app_background")
     }
 }

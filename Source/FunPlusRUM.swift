@@ -21,6 +21,17 @@ extension NetworkReachabilityManager.NetworkReachabilityStatus {
     }
 }
 
+// MARK: - RUMEventTracedListener
+
+///
+/// Classes adopted to the `RUMEventTracedListener` will be notified
+/// when some event is traced or is suppressed.
+///
+public protocol RUMEventTracedListener {
+    func eventTraced(event: [String: Any])
+    func eventSuppressed(event: [String: Any])
+}
+
 // MARK: - FunPlusRUM
 
 ///
@@ -42,6 +53,9 @@ public class FunPlusRUM {
     /// The `LogAgentClient` instance used to trace RUM events.
     let logAgentClient: LogAgentClient
     
+    /// Listeners for event tracing.
+    var listeners = [RUMEventTracedListener]()
+    
     /// The sampler used to filter out events.
     let sampler: RUMSampler
     
@@ -56,14 +70,6 @@ public class FunPlusRUM {
     
     /// User-defined properties.
     var extraProperties: [String: String]
-    
-    #if DEBUG
-    /// History of traced RUM events.
-    var traceHistory = [(eventString: String, traceTime: Date)]()
-    
-    /// History of suppressed RUM events.
-    var suppressHistory = [(eventString: String, traceTime: Date)]()
-    #endif
 
     // MARK: - Init & Deinit
     
@@ -121,6 +127,17 @@ public class FunPlusRUM {
         unregisterNotificationObservers()
     }
     
+    // MARK: - Listener
+    
+    /**
+        Register a listener for event tracing. Make sure not to register twice for one listner.
+     
+        - parameter listener:   The listener to be registered.
+     */
+    public func registerEventTracedListener(listener: RUMEventTracedListener) {
+        listeners.append(listener)
+    }
+    
     // MARK: - Trace
     
     /**
@@ -132,14 +149,13 @@ public class FunPlusRUM {
         if sampler.shouldSendEvent(event) {
             logAgentClient.trace(entry: event)
             
-            #if DEBUG
-            traceHistory.append((eventString: event.description, traceTime: Date()))
-            #endif
+            for listener in listeners {
+                listener.eventTraced(event: event)
+            }
         } else {
-            
-            #if DEBUG
-            suppressHistory.append((eventString: event.description, traceTime: Date()))
-            #endif
+            for listener in listeners {
+                listener.eventSuppressed(event: event)
+            }
         }
     }
     
