@@ -1,5 +1,18 @@
 # Changelog
 
+### v4.1.0-alpha.0
+
+* Bugfix #21: Put `LogAgentClient.archive()` to the serial operation queue.
+* Bugfix #36: Use different labels for KPI and custom event trackers.
+* Performance improvement: Use `autoreleasepool` when serializing JSON strings.
+* Refactor: Use `async` blocks instead of `sync` blocks in `LogAgentClient`.
+* Refactor: Use a copied data list instead of the original data list when uploading.
+* Refactor: Remove `networkReachabilityManager` from `LogAgentClient`, because we're not using it any longer.
+* Refactor: Remove `traceHistory` from RUM and Data to avoid potential memory leaks.
+* Refactor: Remove `JsonSchema/` from sources.
+* Refactor: Stop observing `appDidEnterBackground` and `appWillEnterForeground` in `LogAgentClient`.
+* Refactor: Modify `ProgressHandler` to fit code changes.
+
 ### v4.0.5-alpha.0
 
 * Bugfix #12. However the fix might not work since the root cause of #12 still remains unclear.
