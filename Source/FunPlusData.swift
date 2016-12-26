@@ -175,7 +175,7 @@ public class FunPlusData: SessionStatusChangeListener {
             }
             
             #if DEBUG
-                customTraceHistory.append(eventString: event.description, traceTime: Date())
+            customTraceHistory.append(eventString: event.description, traceTime: Date())
             #endif
         }
         
