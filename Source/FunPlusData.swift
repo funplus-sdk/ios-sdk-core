@@ -73,14 +73,6 @@ public class FunPlusData: SessionStatusChangeListener {
     /// User-defined properties.
     var extraProperties: [String: String]
     
-    #if DEBUG
-    /// History of traced KPI events.
-    var kpiTraceHistory = [(eventString: String, traceTime: Date)]()
-    
-    /// History of traced custom events.
-    var customTraceHistory = [(eventString: String, traceTime: Date)]()
-    #endif
-    
     // MARK: - Init
     
     /**
@@ -162,10 +154,6 @@ public class FunPlusData: SessionStatusChangeListener {
             for listener in listeners {
                 listener.kpiEventTraced(event: event)
             }
-            
-            #if DEBUG
-            kpiTraceHistory.append(eventString: event.description, traceTime: Date())
-            #endif
         case .custom:
             customLogAgentClient.trace(entry: event)
             
@@ -173,10 +161,6 @@ public class FunPlusData: SessionStatusChangeListener {
             for listener in listeners {
                 listener.customEventTraced(event: event)
             }
-            
-            #if DEBUG
-            customTraceHistory.append(eventString: event.description, traceTime: Date())
-            #endif
         }
         
         getLogger().i("Trace Data event: \(event)")

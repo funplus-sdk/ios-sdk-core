@@ -9,6 +9,19 @@
 import XCTest
 @testable import FunPlusSDK
 
+class DataEventListener : DataEventTracedListener {
+    var kpiTraceHistory = [(eventString: String, traceTime: Date)]()
+    var customTraceHistory = [(eventString: String, traceTime: Date)]()
+    
+    func kpiEventTraced(event: [String: Any]) {
+        kpiTraceHistory.append(eventString: event.description, traceTime: Date())
+    }
+    
+    func customEventTraced(event: [String: Any]) {
+        customTraceHistory.append(eventString: event.description, traceTime: Date())
+    }
+}
+
 class FunPlusDataTests: XCTestCase {
     
     let TIMEOUT = 10.0
@@ -18,11 +31,13 @@ class FunPlusDataTests: XCTestCase {
     func testTrace() {
         // Given, When
         let tracer = FunPlusData(funPlusConfig: funPlusConfig)
+        let listener = DataEventListener()
+        tracer.registerEventTracedListener(listener: listener)
         tracer.traceSessionStart()
         
         // Then
-        XCTAssertEqual(tracer.kpiTraceHistory.count, 1, "traceHistory.count should be 1")
-        let event = tracer.kpiTraceHistory[0].eventString
+        XCTAssertEqual(listener.kpiTraceHistory.count, 1, "traceHistory.count should be 1")
+        let event = listener.kpiTraceHistory[0].eventString
         
         XCTAssertTrue(event.contains("event"), "event should be contained")
         XCTAssertTrue(event.contains("session_start"), "session_start should be contained")
@@ -44,13 +59,15 @@ class FunPlusDataTests: XCTestCase {
     func testTraceSessionStart() {
         // Given
         let tracer = FunPlusData(funPlusConfig: funPlusConfig)
+        let listener = DataEventListener()
+        tracer.registerEventTracedListener(listener: listener)
         
         // When
         tracer.traceSessionStart()
         
         // Then
-        XCTAssertEqual(tracer.kpiTraceHistory.count, 1, "traceHistory.count should be 1")
-        let event = tracer.kpiTraceHistory[0].eventString
+        XCTAssertEqual(listener.kpiTraceHistory.count, 1, "traceHistory.count should be 1")
+        let event = listener.kpiTraceHistory[0].eventString
         
         XCTAssertTrue(event.contains("event"), "event should be contained")
         XCTAssertTrue(event.contains("session_start"), "session_start should be contained")
@@ -72,13 +89,15 @@ class FunPlusDataTests: XCTestCase {
     func testTraceSessionEnd() {
         // Given
         let tracer = FunPlusData(funPlusConfig: funPlusConfig)
+        let listener = DataEventListener()
+        tracer.registerEventTracedListener(listener: listener)
         
         // When
         tracer.traceSessionEnd(sessionLength: 100)
         
         // Then
-        XCTAssertEqual(tracer.kpiTraceHistory.count, 1, "traceHistory.count should be 1")
-        let event = tracer.kpiTraceHistory[0].eventString
+        XCTAssertEqual(listener.kpiTraceHistory.count, 1, "traceHistory.count should be 1")
+        let event = listener.kpiTraceHistory[0].eventString
         
         XCTAssertTrue(event.contains("event"), "event should be contained")
         XCTAssertTrue(event.contains("session_end"), "session_end should be contained")
@@ -100,13 +119,15 @@ class FunPlusDataTests: XCTestCase {
     func testTraceNewUser() {
         // Given
         let tracer = FunPlusData(funPlusConfig: funPlusConfig)
+        let listener = DataEventListener()
+        tracer.registerEventTracedListener(listener: listener)
         
         // When
         tracer.traceNewUser()
         
         // Then
-        XCTAssertEqual(tracer.kpiTraceHistory.count, 1, "traceHistory.count should be 1")
-        let event = tracer.kpiTraceHistory[0].eventString
+        XCTAssertEqual(listener.kpiTraceHistory.count, 1, "traceHistory.count should be 1")
+        let event = listener.kpiTraceHistory[0].eventString
         
         XCTAssertTrue(event.contains("event"), "event should be contained")
         XCTAssertTrue(event.contains("new_user"), "new_user should be contained")
@@ -128,6 +149,9 @@ class FunPlusDataTests: XCTestCase {
     func testTracePayment() {
         // Given
         let tracer = FunPlusData(funPlusConfig: funPlusConfig)
+        let listener = DataEventListener()
+        tracer.registerEventTracedListener(listener: listener)
+        
         let amount = 399.0
         let currency = "USD"
         let productId = "com.funplus.barnvoyage.jewelBox.270"
@@ -152,8 +176,8 @@ class FunPlusDataTests: XCTestCase {
         )
         
         // Then
-        XCTAssertEqual(tracer.kpiTraceHistory.count, 1, "traceHistory.count should be 1")
-        let event = tracer.kpiTraceHistory[0].eventString
+        XCTAssertEqual(listener.kpiTraceHistory.count, 1, "traceHistory.count should be 1")
+        let event = listener.kpiTraceHistory[0].eventString
         
         XCTAssertTrue(event.contains("event"), "event should be contained")
         XCTAssertTrue(event.contains("payment"), "payment should be contained")
@@ -183,6 +207,9 @@ class FunPlusDataTests: XCTestCase {
     func testTraceCustom() {
         // Given
         let tracer = FunPlusData(funPlusConfig: funPlusConfig)
+        let listener = DataEventListener()
+        tracer.registerEventTracedListener(listener: listener)
+        
         let customEvent: [String: Any] = [
             "event":        "plant",
             "data_version": "2.0",
@@ -205,8 +232,8 @@ class FunPlusDataTests: XCTestCase {
         tracer.traceCustom(event: customEvent)
         
         // Then
-        XCTAssertEqual(tracer.customTraceHistory.count, 1, "traceHistory.count should be 1")
-        let event = tracer.customTraceHistory[0].eventString
+        XCTAssertEqual(listener.customTraceHistory.count, 1, "traceHistory.count should be 1")
+        let event = listener.customTraceHistory[0].eventString
         
         XCTAssertTrue(event.contains("event"), "event should be contained")
         XCTAssertTrue(event.contains("plant"), "plant should be contained")
@@ -228,6 +255,9 @@ class FunPlusDataTests: XCTestCase {
     func testTraceCustomEventWithNameAndProperties() {
         // Given
         let tracer = FunPlusData(funPlusConfig: funPlusConfig)
+        let listener = DataEventListener()
+        tracer.registerEventTracedListener(listener: listener)
+        
         let eventName = "plant"
         let properties: [String: Any] = [
             "m1": [
@@ -240,8 +270,8 @@ class FunPlusDataTests: XCTestCase {
         tracer.traceCustom(eventName: eventName, properties: properties)
         
         // Then
-        XCTAssertEqual(tracer.customTraceHistory.count, 1, "traceHistory.count should be 1")
-        let event = tracer.customTraceHistory[0].eventString
+        XCTAssertEqual(listener.customTraceHistory.count, 1, "traceHistory.count should be 1")
+        let event = listener.customTraceHistory[0].eventString
         
         XCTAssertTrue(event.contains("event"), "event should be contained")
         XCTAssertTrue(event.contains("plant"), "plant should be contained")
