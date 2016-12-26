@@ -133,12 +133,12 @@ public class FunPlusRUM {
             logAgentClient.trace(entry: event)
             
             #if DEBUG
-            // traceHistory.append((eventString: event.description, traceTime: Date()))
+            traceHistory.append((eventString: event.description, traceTime: Date()))
             #endif
         } else {
             
             #if DEBUG
-            // suppressHistory.append((eventString: event.description, traceTime: Date()))
+            suppressHistory.append((eventString: event.description, traceTime: Date()))
             #endif
         }
     }
