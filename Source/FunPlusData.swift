@@ -97,10 +97,8 @@ public class FunPlusData: SessionStatusChangeListener {
             tag: tag.core,
             key: key,
             uploadInterval: uploadInterval,
-            progress: { (_, _, uploaded) in
-                if uploaded != 0 {
-                    print("Uploading Data KPI events in progress: {uploaded=\(uploaded)}")
-                }
+            progress: { (remaining, uploaded) in
+                print("Uploading Data KPI events: {uploaded=\(uploaded), remaining=\(remaining)}")
             }
         )
         customLogAgentClient = LogAgentClient(
@@ -110,10 +108,8 @@ public class FunPlusData: SessionStatusChangeListener {
             tag: tag.custom,
             key: key,
             uploadInterval: uploadInterval,
-            progress: { (_, _, uploaded) in
-                if uploaded != 0 {
-                    print("Uploading Data custom events in progress: {uploaded=\(uploaded)}")
-                }
+            progress: { (remaining, uploaded) in
+                print("Uploading Data custom events: {uploaded=\(uploaded), remaining=\(remaining)}")
             }
         )
         
