@@ -20,9 +20,6 @@
 		D76CD1B31DACEEE4006D47E6 /* LogAgentDataUploaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D76CD1B11DACEEAB006D47E6 /* LogAgentDataUploaderTests.swift */; };
 		D76CD1B41DACEEE4006D47E6 /* FunPlusRUMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D76CD1AF1DACEE83006D47E6 /* FunPlusRUMTests.swift */; };
 		D76CD1B61DACEF8F006D47E6 /* FunPlusConfigFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = D76CD1B51DACEF8F006D47E6 /* FunPlusConfigFactory.swift */; };
-		D78876331DBBAD8800B0E10F /* JSONSchema.swift in Sources */ = {isa = PBXBuildFile; fileRef = D78876321DBBAD8800B0E10F /* JSONSchema.swift */; };
-		D78876371DBBB93400B0E10F /* JSONSchemaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D78876361DBBB93400B0E10F /* JSONSchemaTests.swift */; };
-		D78876391DBBB95000B0E10F /* Validators.swift in Sources */ = {isa = PBXBuildFile; fileRef = D78876381DBBB95000B0E10F /* Validators.swift */; };
 		D78CBF981DB4EF9F00DEB47F /* LoggerDataConsumerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D78CBF971DB4EF9F00DEB47F /* LoggerDataConsumerTests.swift */; };
 		D791548A1DA947C200CFF124 /* FunPlusSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = D79154891DA947C200CFF124 /* FunPlusSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D79154911DA94A3300CFF124 /* FunPlusSDKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D79154901DA94A3300CFF124 /* FunPlusSDKTests.swift */; };
@@ -123,9 +120,7 @@
 		D7CC8A281DCC9FEC005964EC /* Updatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7CC89E91DCC9FEC005964EC /* Updatable.swift */; };
 		D7CC8A291DCC9FEC005964EC /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7CC89EA1DCC9FEC005964EC /* Utils.swift */; };
 		D7CC8A2A1DCC9FEC005964EC /* ZeroPadding.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7CC89EB1DCC9FEC005964EC /* ZeroPadding.swift */; };
-		D7FDA93A1DBBC06F008F370E /* DataEventValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FDA9391DBBC06F008F370E /* DataEventValidator.swift */; };
 		D7FDA94E1DBBC083008F370E /* RUMEventValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FDA94D1DBBC083008F370E /* RUMEventValidator.swift */; };
-		D7FDA9501DBBCF07008F370E /* DataEventValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FDA94F1DBBCF07008F370E /* DataEventValidatorTests.swift */; };
 		D7FDA9521DBCBD11008F370E /* FunPlusDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FDA9511DBCBD11008F370E /* FunPlusDataTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -153,9 +148,6 @@
 		D76CD1AF1DACEE83006D47E6 /* FunPlusRUMTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FunPlusRUMTests.swift; path = Tests/FunPlusRUMTests.swift; sourceTree = "<group>"; };
 		D76CD1B11DACEEAB006D47E6 /* LogAgentDataUploaderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LogAgentDataUploaderTests.swift; path = Tests/LogAgentDataUploaderTests.swift; sourceTree = "<group>"; };
 		D76CD1B51DACEF8F006D47E6 /* FunPlusConfigFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FunPlusConfigFactory.swift; path = Tests/FunPlusConfigFactory.swift; sourceTree = "<group>"; };
-		D78876321DBBAD8800B0E10F /* JSONSchema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = JSONSchema.swift; path = Source/JSONSchema/JSONSchema.swift; sourceTree = "<group>"; };
-		D78876361DBBB93400B0E10F /* JSONSchemaTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = JSONSchemaTests.swift; path = Tests/JSONSchemaTests.swift; sourceTree = "<group>"; };
-		D78876381DBBB95000B0E10F /* Validators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Validators.swift; path = Source/JSONSchema/Validators.swift; sourceTree = "<group>"; };
 		D78CBF971DB4EF9F00DEB47F /* LoggerDataConsumerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoggerDataConsumerTests.swift; path = Tests/LoggerDataConsumerTests.swift; sourceTree = "<group>"; };
 		D79154871DA9473A00CFF124 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Source/Info.plist; sourceTree = "<group>"; };
 		D79154891DA947C200CFF124 /* FunPlusSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FunPlusSDK.h; path = Source/FunPlusSDK.h; sourceTree = "<group>"; };
@@ -259,9 +251,7 @@
 		D7CC89E91DCC9FEC005964EC /* Updatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Updatable.swift; path = Source/CryptoSwift/Updatable.swift; sourceTree = "<group>"; };
 		D7CC89EA1DCC9FEC005964EC /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Utils.swift; path = Source/CryptoSwift/Utils.swift; sourceTree = "<group>"; };
 		D7CC89EB1DCC9FEC005964EC /* ZeroPadding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ZeroPadding.swift; path = Source/CryptoSwift/ZeroPadding.swift; sourceTree = "<group>"; };
-		D7FDA9391DBBC06F008F370E /* DataEventValidator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataEventValidator.swift; path = Source/DataEventValidator.swift; sourceTree = "<group>"; };
 		D7FDA94D1DBBC083008F370E /* RUMEventValidator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RUMEventValidator.swift; path = Source/RUMEventValidator.swift; sourceTree = "<group>"; };
-		D7FDA94F1DBBCF07008F370E /* DataEventValidatorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataEventValidatorTests.swift; path = Tests/DataEventValidatorTests.swift; sourceTree = "<group>"; };
 		D7FDA9511DBCBD11008F370E /* FunPlusDataTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FunPlusDataTests.swift; path = Tests/FunPlusDataTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -308,22 +298,12 @@
 			name = Alamofire;
 			sourceTree = "<group>";
 		};
-		D788761F1DBBAD6800B0E10F /* JSONSchema */ = {
-			isa = PBXGroup;
-			children = (
-				D78876381DBBB95000B0E10F /* Validators.swift */,
-				D78876321DBBAD8800B0E10F /* JSONSchema.swift */,
-			);
-			name = JSONSchema;
-			sourceTree = "<group>";
-		};
 		D791546D1DA9463400CFF124 /* Source */ = {
 			isa = PBXGroup;
 			children = (
 				D7CC89A91DCC9FD6005964EC /* CryptoSwift */,
 				D79154851DA9467C00CFF124 /* Supporting Files */,
 				D7442CC31DCAE81500EB8640 /* Alamofire */,
-				D788761F1DBBAD6800B0E10F /* JSONSchema */,
 				D791549A1DA9524900CFF124 /* DeviceInfo.swift */,
 				D7643FFB1DADE1A90030C8CB /* FunPlusSDK.swift */,
 				D76CD19A1DACBDE5006D47E6 /* FunPlusData.swift */,
@@ -341,7 +321,6 @@
 				D79154961DA94C8E00CFF124 /* LogLevel.swift */,
 				D79154981DA951F000CFF124 /* FunPlusFactory.swift */,
 				D74BB6331DAA1B46001E0D8E /* LoggerDataConsumer.swift */,
-				D7FDA9391DBBC06F008F370E /* DataEventValidator.swift */,
 				D7FDA94D1DBBC083008F370E /* RUMEventValidator.swift */,
 				D72B319C1DBE32B60091B42A /* OCExposer.swift */,
 			);
@@ -372,8 +351,6 @@
 				D763C4651DAE49B300653F43 /* SessionManagerTests.swift */,
 				D763C4781DAE4EF100653F43 /* LoggerTests.swift */,
 				D78CBF971DB4EF9F00DEB47F /* LoggerDataConsumerTests.swift */,
-				D78876361DBBB93400B0E10F /* JSONSchemaTests.swift */,
-				D7FDA94F1DBBCF07008F370E /* DataEventValidatorTests.swift */,
 				D7FDA9511DBCBD11008F370E /* FunPlusDataTests.swift */,
 				D7BBC75F1DD57AEA0029F2E3 /* PassportClientTests.swift */,
 				D7B9EBAA1DE303B300E679FA /* OCExposerTests.swift */,
@@ -617,7 +594,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D7FDA93A1DBBC06F008F370E /* DataEventValidator.swift in Sources */,
 				D7CC89FA1DCC9FEC005964EC /* RandomAccessBlockModeWorker.swift in Sources */,
 				D7CC8A231DCC9FEC005964EC /* String+Extension.swift in Sources */,
 				D7CC8A1F1DCC9FEC005964EC /* SecureBytes.swift in Sources */,
@@ -647,14 +623,12 @@
 				D7CC899A1DCC9FB4005964EC /* DispatchQueue+Alamofire.swift in Sources */,
 				D7CC89A31DCC9FB4005964EC /* Result.swift in Sources */,
 				D7CC8A191DCC9FEC005964EC /* PKCS5.swift in Sources */,
-				D78876331DBBAD8800B0E10F /* JSONSchema.swift in Sources */,
 				D79154A11DA9531000CFF124 /* PassportClient.swift in Sources */,
 				D79154A51DA9564B00CFF124 /* SessionManager.swift in Sources */,
 				D7CC8A0B1DCC9FEC005964EC /* Rabbit+Foundation.swift in Sources */,
 				D7CC89F11DCC9FEC005964EC /* BlockMode.swift in Sources */,
 				D791549B1DA9524900CFF124 /* DeviceInfo.swift in Sources */,
 				D7CC899E1DCC9FB4005964EC /* ParameterEncoding.swift in Sources */,
-				D78876391DBBB95000B0E10F /* Validators.swift in Sources */,
 				D7CC8A131DCC9FEC005964EC /* MD5.swift in Sources */,
 				D7CC8A221DCC9FEC005964EC /* SHA3.swift in Sources */,
 				D7CC8A171DCC9FEC005964EC /* PBKDF1.swift in Sources */,
@@ -726,7 +700,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				D74609F31DACF2CA004DDC98 /* LogAgentClientTests.swift in Sources */,
-				D7FDA9501DBBCF07008F370E /* DataEventValidatorTests.swift in Sources */,
 				D78CBF981DB4EF9F00DEB47F /* LoggerDataConsumerTests.swift in Sources */,
 				D76CD1B61DACEF8F006D47E6 /* FunPlusConfigFactory.swift in Sources */,
 				D7B9EBAB1DE303B300E679FA /* OCExposerTests.swift in Sources */,
@@ -738,7 +711,6 @@
 				D763C4661DAE49B300653F43 /* SessionManagerTests.swift in Sources */,
 				D7BBC7601DD57AEA0029F2E3 /* PassportClientTests.swift in Sources */,
 				D763C4791DAE4EF100653F43 /* LoggerTests.swift in Sources */,
-				D78876371DBBB93400B0E10F /* JSONSchemaTests.swift in Sources */,
 				D76CD1AE1DACD5E3006D47E6 /* FunPlusConfigTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
