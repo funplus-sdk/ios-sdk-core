@@ -113,16 +113,16 @@ class LogAgentDataUploader {
             return
         }
         
-        autoreleasepool {
+        // Compose the request.
+        var request = URLRequest(url: url)
+        request.httpMethod = "post"
+        request.httpBody = data
         
-            // Compose the request.
-            var request = URLRequest(url: url)
-            request.httpMethod = "post"
-            request.httpBody = data
-            
-            // Use the default shared session.
-            let session = URLSession.shared
-            session.uploadTask(with: request, from: data) { (data, res, error) -> Void in
+        // Use the default shared session.
+        let session = URLSession.shared
+        session.uploadTask(with: request, from: data) { (data, res, error) -> Void in
+            autoreleasepool {
+                
                 //==============================================
                 //     Step 1: Check response status
                 //==============================================
@@ -144,8 +144,8 @@ class LogAgentDataUploader {
                 //==============================================
                 completion(true)
                 session.reset {}
-            }.resume()
-            
-        }
+                    
+            }
+        }.resume()
     }
 }

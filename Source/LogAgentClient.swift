@@ -27,7 +27,7 @@ class LogAgentClient {
     // MARK: - Properties
     
     /// The max allowed size of data queue.
-    static let MAX_QUEUE_SIZE = 5000
+    static let MAX_QUEUE_SIZE = 2000
     
     /// The SDK configurations.
     let funPlusConfig: FunPlusConfig
@@ -142,19 +142,23 @@ class LogAgentClient {
         serialQueue.async {
             guard self.dataQueue.count > 0 else { return }
             
-            let batchSize = min(self.dataQueue.count, LogAgentDataUploader.MAX_BATCH_SIZE)
-            let data = Array(self.dataQueue[0..<batchSize])
-            self.dataQueue.removeSubrange(0..<batchSize)
+            autoreleasepool {
             
-            self.uploader.upload(data: data) { [weak self] status in
-                guard let that = self else { return }
+                let batchSize = min(self.dataQueue.count, LogAgentDataUploader.MAX_BATCH_SIZE)
+                let data = Array(self.dataQueue[0..<batchSize])
+                self.dataQueue.removeSubrange(0..<batchSize)
                 
-                if status {
-                    that.progress?(true, batchSize, batchSize)
-                } else {
-                    that.progress?(false, 0, 0)
-                    that.trace(entries: data)
+                self.uploader.upload(data: data) { [weak self] status in
+                    guard let that = self else { return }
+                    
+                    if status {
+                        that.progress?(true, batchSize, batchSize)
+                    } else {
+                        that.progress?(false, 0, 0)
+                        that.trace(entries: data)
+                    }
                 }
+                
             }
         }
     }
