@@ -53,9 +53,6 @@ class LogAgentClient {
     /// The timer used to periodically tick an upload progress.
     var timer: Timer? = nil
     
-    /// The identifier of background task used by currnet `LogAgentClient` instance.
-    var backgroundTaskId: UIBackgroundTaskIdentifier?
-    
     /// The periodically callback when data is being uploaded.
     var progress: ProgressHandler?
     
@@ -230,41 +227,6 @@ class LogAgentClient {
         stopTimer()
     }
 
-    /// When application did enter background, we start a background task to
-    /// flush data and then end the background task.
-    @objc func appDidEnterBackground() {
-        let app = UIApplication.shared
-        self.backgroundTaskId = app.beginBackgroundTask (expirationHandler: {
-            self.backgroundTaskId = UIBackgroundTaskInvalid
-        })
-        
-        let executeBackgroundTask: () -> Void = { () in
-            self.upload()
-        }
-        
-        executeBackgroundTask()
-        
-        serialQueue.async {
-            if let backgroundTaskId = self.backgroundTaskId {
-                app.endBackgroundTask(backgroundTaskId)
-                self.backgroundTaskId = UIBackgroundTaskInvalid
-            }
-        }
-    }
-
-    /// When application will enter foreground, we end the background task
-    /// if it is still alive.
-    @objc func appWillEnterForeground() {
-        let app = UIApplication.shared
-        
-        serialQueue.async {
-            if let backgroundTaskId = self.backgroundTaskId {
-                app.endBackgroundTask(backgroundTaskId)
-                self.backgroundTaskId = UIBackgroundTaskInvalid
-            }
-        }
-    }
-
     /// When application will terminate, we archive un-flushed data.
     @objc func appWillTerminate() {
         archive()
@@ -277,8 +239,6 @@ class LogAgentClient {
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(self.appDidBecomeActive), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
         nc.addObserver(self, selector: #selector(self.appWillResignActive), name: NSNotification.Name.UIApplicationWillResignActive, object: nil)
-        nc.addObserver(self, selector: #selector(self.appDidEnterBackground), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
-        nc.addObserver(self, selector: #selector(self.appWillEnterForeground), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
         nc.addObserver(self, selector: #selector(self.appWillTerminate), name: NSNotification.Name.UIApplicationWillTerminate, object: nil)
     }
     

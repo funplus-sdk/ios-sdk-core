@@ -230,51 +230,6 @@ class LogAgentClientTests: XCTestCase {
         XCTAssertNil(logger.timer, "timer should be nil")
     }
     
-    func testAppDidEnterBackground() {
-        // Given
-        let testCount = 100
-        let logger = LogAgentClient(funPlusConfig: funPlusConfig, label: LABEL, endpoint: ENDPOINT, tag: TAG, key: KEY, uploadInterval: 0.0)
-        let ex = expectation(description: "\(logger)")
-        
-        // When
-        for i in 1...testCount {
-            logger.trace(entry: ["message": "\(i)"])
-        }
-        
-        logger.appDidEnterBackground()
-        
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(10 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) {
-            ex.fulfill()
-        }
-        
-        waitForExpectations(timeout: TIMEOUT, handler: nil)
-        
-        // Then
-        XCTAssertEqual(logger.dataQueue.count, 0, "dataQueue.count should be 0")
-    }
-
-    func testAppWillEnterForeground() {
-        // Given
-        let logger = LogAgentClient(funPlusConfig: funPlusConfig, label: LABEL, endpoint: ENDPOINT, tag: TAG, key: KEY, uploadInterval: 0.0)
-        let ex = expectation(description: "\(logger)")
-        
-        // When
-        logger.appDidEnterBackground()
-        
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(2 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) {
-            logger.appWillEnterForeground()
-            
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(10 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) {
-                ex.fulfill()
-            }
-        }
-        
-        waitForExpectations(timeout: TIMEOUT, handler: nil)
-        
-        // Then
-        XCTAssertEqual(logger.backgroundTaskId, UIBackgroundTaskInvalid, "backgroundTaskId should be `UIBackgroundTaskInvalid`")
-    }
-
     func testAppWillTerminate() {
         // Given
         let testCount = 512
