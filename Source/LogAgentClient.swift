@@ -180,13 +180,15 @@ class LogAgentClient {
         Archive current data queue to file.
      */
     func archive() {
-        guard !dataQueue.isEmpty else {
-            return
-        }
-        
-        if NSKeyedArchiver.archiveRootObject(dataQueue, toFile: archiveFilePath) {
-            print("\(label): \(dataQueue.count) entries archived")
-            dataQueue.removeAll()
+        serialQueue.async {
+            guard !self.dataQueue.isEmpty else {
+                return
+            }
+            
+            if NSKeyedArchiver.archiveRootObject(self.dataQueue, toFile: self.archiveFilePath) {
+                print("\(self.label): \(self.dataQueue.count) entries archived")
+                self.dataQueue.removeAll()
+            }
         }
     }
     
