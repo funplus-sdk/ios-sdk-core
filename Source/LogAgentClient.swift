@@ -53,9 +53,6 @@ class LogAgentClient {
     /// The timer used to periodically tick an upload progress.
     var timer: Timer? = nil
     
-    /// The network reachability manager.
-    var networkReachabilityManager: NetworkReachabilityManager?
-    
     /// The identifier of background task used by currnet `LogAgentClient` instance.
     var backgroundTaskId: UIBackgroundTaskIdentifier?
     
@@ -101,8 +98,6 @@ class LogAgentClient {
         dataQueue = NSKeyedUnarchiver.unarchiveObject(withFile: archiveFilePath) as? [[String: Any]] ?? []
         // Clear local stored data.
         NSKeyedArchiver.archiveRootObject([], toFile: archiveFilePath)
-        
-        networkReachabilityManager = NetworkReachabilityManager()
         
         registerNotificationObservers()
         startTimer()
