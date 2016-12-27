@@ -113,39 +113,43 @@ class LogAgentDataUploader {
             return
         }
         
-        // Compose the request.
-        var request = URLRequest(url: url)
-        request.httpMethod = "post"
-        request.httpBody = data
+        autoreleasepool {
         
-        // Use the default shared session.
-        let session = URLSession.shared
-        session.uploadTask(with: request, from: data) { (data, res, error) -> Void in
-            autoreleasepool {
-                
-                //==============================================
-                //     Step 1: Check response status
-                //==============================================
-                guard let res = res as? HTTPURLResponse, res.statusCode == 200 else {
-                    completion(false)
-                    return
-                }
-                
-                //==============================================
-                //     Step 2: Check response body
-                //==============================================
-                guard let data = data, String(data: data, encoding: String.Encoding.utf8) == "OK" else {
-                    completion(false)
-                    return
-                }
-                
-                //==============================================
-                //     Okay
-                //==============================================
-                completion(true)
-                session.reset {}
+            // Compose the request.
+            var request = URLRequest(url: url)
+            request.httpMethod = "post"
+            request.httpBody = data
+            
+            // Use the default shared session.
+            let session = URLSession.shared
+            session.uploadTask(with: request, from: data) { (data, res, error) -> Void in
+                autoreleasepool {
                     
-            }
-        }.resume()
+                    //==============================================
+                    //     Step 1: Check response status
+                    //==============================================
+                    guard let res = res as? HTTPURLResponse, res.statusCode == 200 else {
+                        completion(false)
+                        return
+                    }
+                    
+                    //==============================================
+                    //     Step 2: Check response body
+                    //==============================================
+                    guard let data = data, String(data: data, encoding: String.Encoding.utf8) == "OK" else {
+                        completion(false)
+                        return
+                    }
+                    
+                    //==============================================
+                    //     Okay
+                    //==============================================
+                    completion(true)
+                    session.reset {}
+                        
+                }
+            }.resume()
+            
+        }
     }
 }
