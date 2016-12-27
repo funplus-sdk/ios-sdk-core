@@ -158,8 +158,7 @@ public class FunPlusData: SessionStatusChangeListener {
                 listener.customEventTraced(event: event)
             }
         }
-        
-        getLogger().i("Trace Data event: \(event)")
+
     }
     
     /**

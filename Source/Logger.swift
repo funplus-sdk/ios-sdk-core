@@ -24,7 +24,7 @@ class Logger {
     
     // MARK: - Properties
     
-    static let MAX_QUEUE_SIZE = 1024
+    static let MAX_QUEUE_SIZE = 500
     
     let funPlusConfig: FunPlusConfig
     let logLevel: LogLevel
