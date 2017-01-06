@@ -7,6 +7,8 @@
 * Swift 3.0+
 * The Xcode Terminal Tools (which provide the `xcodebuild` command)
 
+Note: If you're using Objective-C in your project, please see the [Objective-C APIs](#objective-c-apis) section.
+
 ## Table of  Contents
 
 * [Integration](#integration)
@@ -24,6 +26,11 @@
     - [Trace a Custom Event](#trace-a-custom-event)
     - [Set Extra Properties to Data Events](#set-extra-properties-to-data-events)
     - [Manually trace session events](#manually-trace-session-events)
+* [Objective-C APIs](#objective-c-apis)
+  * [Install the SDK](#install-the-sdk)
+  * [The ID Module](#the-id-module)
+  * [The RUM module](#the-rum-module)
+  * [The Data Module](#the-data-module)
 * [FAQ](#faq)
 
 ## Integration
@@ -237,6 +244,127 @@ FunPlusSDK.getFunPlusData().traceSessionEnd(sessionLength:)
 ```
 
 Note that don't manually trace these events when `dataAutoTraceSessionEvents` is set to true.
+
+## Objective-C APIs
+
+This section describes how to use the Objective-C APIs exposed by the SDK. Make sure you have gone through previous sections.
+
+We provide a class named `OCExposer` for Objective-C callers. In order to use it, please follow these two instructions:
+
+1) In project's build settings panel, add `@executable_path/Frameworks` to `Linking > Runpath Search Paths`, and set `Build Options > Always Embed Swift Standard Libraries` to be `Yes`. 
+
+2) Include the `FunPlusSDK/FunPlusSDK-Swift.h` header file in your Objective-C source files.
+
+```objective-c
+#import <FunPlusSDK/FunPlusSDK-Swift.h>
+
+[OCExposer someMethod];
+```
+
+### Install the SDK
+
+```objective-c
+[OCExposer installWithAppId:(NSString *)
+                     appKey:(NSString *)
+                     rumTag:(NSString *)
+                     rumKey:(NSString *)
+                environment:(NSString *)];
+```
+
+The `environment` parameter accepts either `"sandbox"` or `"production"`.
+
+You can pass in more parameters if you want to change the default behavior of the SDK. The [Config the SDK](#config-the-sdk) section describes each config item.
+
+```objective-c
+[OCExposer installWithAppId:(NSString *)
+                     appKey:(NSString *)
+                     rumTag:(NSString *)
+                     rumKey:(NSString *)
+                environment:(NSString *)
+       loggerUploadInterval:(long)
+          rumUploadInterval:(long)
+              rumSampleRate:(double)
+    rumEventWhitelistString:(NSString *)
+     rumUserWhitelistString:(NSString *)
+     rumUserBlacklistString:(NSString *)
+         dataUploadInterval:(long)
+ dataAutoTraceSessionEvents:(bool)]
+```
+
+The three parameters, `rumEventWhitelistString`, `rumUserWhitelistString` and `rumUserBlacklistString` are strings representing JSON arrays, such as `"[\"player1\", \"player2\"]"`
+
+### The ID Module
+
+**Get an FPID based on a given user ID**
+
+```objective-c
+[OCExposer getFPIDWithExternalID:(NSString *)
+            externalIDTypeString:(NSString *)
+                       onSuccess:(void(^)(NSString *fpid))
+                       onFailure:(void(^)(NSString *error))];
+```
+
+The `externalIDTypeString` parameter takes one of the following values:
+
+* guid
+* inapp_user_id
+* email
+* facebook_id
+
+**Bind a new user ID to an existing FPID**
+
+```objective-c
+[OCExposer bindFPIDWithFpid:(NSString *)
+                 externalID:(NSString *)
+       externalIDTypeString:(NSString *)
+                  onSuccess:(void(^)(NSString *fpid))
+                  onFailure:(void(^)(NSString *error))];
+```
+
+### The RUM Module
+
+**Trace a Service Monitoring Event**
+
+```objective-c
+[OCExposer traceRUMServiceMonitoringWithServiceName:(NSString *)
+                                            httpUrl:(NSString *)
+                                         httpStatus:(NSString *)
+                                        requestSize:(int)
+                                       responseSize:(int)
+                                        httpLatency:(long)
+                                          requestTs:(long)
+                                         responseTs:(long)
+                                          requestId:(NSString *)
+                                       targetUserId:(NSString *)
+                                       gameServerId:(NSString *)];
+```
+
+**Set Extra Properties to RUM Events**
+
+```objective-c
+[OCExposer setRUMExtraPropertyWithKey:(NSString *)
+                                value:(NSString *)];
+
+[OCExposer eraseRUMExtraPropertyWithKey:(NSString *)];
+```
+
+### The Data Module
+
+**Trace a Custom Event**
+
+```objective-c
+[OCExposer traceDataCustomWithEventName:(NSString *)
+                       propertiesString:(NSString *)];
+```
+
+**Set Extra Properties to Data Events**
+
+```objective-c
+[OCExposer setDataExtraPropertyWithKey:(NSString *)
+                                 value:(NSString *)];
+
+[OCExposer eraseDataExtraPropertyWithKey:(NSString *)];
+```
 
 ## FAQ
 
