@@ -21,7 +21,7 @@
     - [Trace a Service Monitoring Event](#trace-a-service-monitoring-event)
     - [Set Extra Properties to RUM Events](#set-extra-properties-to-rum-events)
   * [The Data Module](#the-data-module)
-    - [Trace Custom Events](#trace-custom-events)
+    - [Trace a Custom Event](#trace-a-custom-event)
     - [Set Extra Properties to Data Events](#set-extra-properties-to-data-events)
     - [Manually trace session events](#manually-trace-session-events)
 * [FAQ](#faq)
@@ -95,7 +95,7 @@ Here's all the config values that can be overrided.
 
 The objective of the ID module is to provide a unified ID for each unique user and consequently make it possible to identify users across all FunPlus services (marketing, payment, etc). Note that the ID module can not be treated as an account module, therefore you cannot use this module to complete common account functionalities such as registration and logging in.
 
-#### Get an FPID based on a given user ID
+#### Get an FPID Based on a Given User ID
 
 ```swift
 FunPlusSDK.getFunPlusID().get(externalID: "{userid}", externalIDType: ExternalIDType.inAppUserID) { res in
@@ -108,7 +108,7 @@ FunPlusSDK.getFunPlusID().get(externalID: "{userid}", externalIDType: ExternalID
 }
 ```
 
-#### Bind a new user ID to an existing FPID
+#### Bind a New User ID to an Existing FPID
 
 ```swift
 FunPlusSDK.getFunPlusID().bind(fpid: "{fpid}", externalID: "{userid}", externalIDType: ExternalIDType.inAppUserID) { res in
@@ -182,7 +182,7 @@ The SDK traces following KPI events automatically:
 - new_user
 - payment
 
-#### Trace custom events
+#### Trace a Custom Event
 
 ```swift
 FunPlusSDK.getFunPlusData().traceCustom(event:)
@@ -217,14 +217,14 @@ It's not fun to type all common fields again and again. Instead, you are allowed
 FunPlusSDK.getFunPlusData().traceCustom(eventName:, properties:)
 ```
 
-#### Set extra properties to Data events
+#### Set Extra Properties to Data Events
 
 ```java
 FunPlusSDK.getFunPlusData().setExtraProperty(key: "{key}", value: "{value}");
 FunPlusSDK.getFunPlusData().eraseExtraProperty(key: "{key}");
 ```
 
-#### Manually trace session events
+#### Manually Trace Session Events
 
 By default, SDK automatically traces the `session_start` and `session_end` events. This behavior can be changed by override the `dataAutoTraceSessionEvents` config value to false.
 
