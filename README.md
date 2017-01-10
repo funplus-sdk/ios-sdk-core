@@ -27,7 +27,6 @@ Note: If you're using Objective-C in your project, please see the [Objective-C A
     * [The Payment Event](#the-payment-event)
     * [Trace a Custom Event](#trace-a-custom-event)
     * [Set Extra Properties to Data Events](#set-extra-properties-to-data-events)
-    * [Manually trace session events](#manually-trace-session-events)
 * [Objective-C APIs](#objective-c-apis)
   * [Install the SDK](#install-the-sdk)
   * [The ID Module](#the-id-module)
@@ -186,7 +185,7 @@ The Data module traces client events and uploads them to FunPlus BI System.
 
 #### Session Starts and Ends
 
-Note: If the `dataAutoTraceSessionEvents` configuration field is set to `true`, SDK will trace `session_start` and `session_end` event automatically.
+If the `dataAutoTraceSessionEvents` configuration field is set to `true`, SDK will trace `session_start` and `session_end` event automatically. Otherwise, you need to call these two methods at correct points to trace session events.
 
 ```swift
 FunPlusSDK.getFunPlusData().traceSessionStart()
@@ -212,7 +211,7 @@ The `tracePayment()` method is defined as below:
     - parameter productType:        The type of the product purchased (optional).
     - parameter transactionId:      The unique transaction ID sent back by the payment processor.
     - parameter paymentProcessor:   The payment processor.
-    - parameter itemsReceived:      An string of JSON array, consisting of one or more items received.
+    - parameter itemsReceived:      A string of JSON array, consisting of one or more items received.
     - parameter currencyReceived:   A string of JSON array, consisting one or more types of currency received.
  */
 public func tracePayment(
@@ -311,20 +310,6 @@ FunPlusSDK.getFunPlusData().traceCustom(eventName:, properties:)
 FunPlusSDK.getFunPlusData().setExtraProperty(key: "{key}", value: "{value}");
 FunPlusSDK.getFunPlusData().eraseExtraProperty(key: "{key}");
 ```
-
-#### Manually Trace Session Events
-
-By default, SDK automatically traces the `session_start` and `session_end` events. This behavior can be changed by override the `dataAutoTraceSessionEvents` config value to false.
-
-Then you need to manually trace these events.
-
-```swift
-FunPlusSDK.getFunPlusData().traceSessionStart()
-...
-FunPlusSDK.getFunPlusData().traceSessionEnd(sessionLength:)
-```
-
-Note that don't manually trace these events when `dataAutoTraceSessionEvents` is set to true.
 
 ## Objective-C APIs
 
