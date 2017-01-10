@@ -23,9 +23,11 @@ Note: If you're using Objective-C in your project, please see the [Objective-C A
     - [Trace a Service Monitoring Event](#trace-a-service-monitoring-event)
     - [Set Extra Properties to RUM Events](#set-extra-properties-to-rum-events)
   * [The Data Module](#the-data-module)
-    - [Trace a Custom Event](#trace-a-custom-event)
-    - [Set Extra Properties to Data Events](#set-extra-properties-to-data-events)
-    - [Manually trace session events](#manually-trace-session-events)
+    * [Session Starts and Ends](#session-starts-and-ends)
+    * [The Payment Event](#the-payment-event)
+    * [Trace a Custom Event](#trace-a-custom-event)
+    * [Set Extra Properties to Data Events](#set-extra-properties-to-data-events)
+    * [Manually trace session events](#manually-trace-session-events)
 * [Objective-C APIs](#objective-c-apis)
   * [Install the SDK](#install-the-sdk)
   * [The ID Module](#the-id-module)
@@ -182,12 +184,91 @@ FunPlusSDK.getFunPlusRUM().eraseExtraProperty(key: "{key}");
 
 The Data module traces client events and uploads them to FunPlus BI System.
 
-The SDK traces following KPI events automatically:
+#### Session Starts and Ends
 
-- session_start
-- session_end
-- new_user
-- payment
+Note: If the `dataAutoTraceSessionEvents` configuration field is set to `true`, SDK will trace `session_start` and `session_end` event automatically.
+
+```swift
+FunPlusSDK.getFunPlusData().traceSessionStart()
+FunPlusSDK.getFunPlusData().traceSessionEnd(sessionLength: Int64)
+```
+
+#### The Payment Event
+
+```swift
+FunPlusSDK.getFunPlusData().tracePayment(...)
+```
+
+The `tracePayment()` method is defined as below:
+
+```swift
+/**
+    Shall be called when user purchase some product.
+     
+    - parameter amount:             Numeric value which corresponds to the cost of the purchase in the monetary unit multiplied by 100.
+    - parameter currency:           The 3-letter ISO 4217 resource Code. [ISO4217](http://www.xe.com/iso4217.php)
+    - parameter productId:          The ID of the product purchased.
+    - parameter productName:        The name of the product purchased (optional).
+    - parameter productType:        The type of the product purchased (optional).
+    - parameter transactionId:      The unique transaction ID sent back by the payment processor.
+    - parameter paymentProcessor:   The payment processor.
+    - parameter itemsReceived:      An string of JSON array, consisting of one or more items received.
+    - parameter currencyReceived:   A string of JSON array, consisting one or more types of currency received.
+ */
+public func tracePayment(
+    amount: Double,
+    currency: String,
+    productId: String,
+    productName: String?,
+    productType: String?,
+    transactionId: String,
+    paymentProcessor: String,
+    itemsReceived: String,
+    currencyReceived: String
+)
+```
+
+The `itemsReceived` parameter contains one or more items received. It consists of the following required fields:
+
+* `d_item_id`: The item id
+* `d_item_name`: The item name
+* `d_item_type`: The type of item e.g. booster, lives, fertilizer
+* `m_item_amount`: The number of items received
+* `d_item_class`: The item class, one of - consumable or durable
+
+Example: 
+
+```json
+"c_items_received": [
+  {
+    "d_item_id":"4312",
+    "d_item_name":"booster_butterfly",
+    "d_item_type":"booster",
+    "m_item_amount":"1",
+    "d_item_class":"consumable"
+  }
+]
+```
+
+The `currencyReceived` parameter contains one or more types of currency received. It consists of the following required fields:
+
+* `m_currency_amount`: The virtual currency amount
+* `d_currency_type`: The type of virtual currency.
+
+Example:
+
+```json
+"c_currency_received": [
+  {
+    "d_currency_type":"rc",
+    "m_currency_amount":"20"
+  },
+  {
+    "d_currency_type":"coins",
+    "m_currency_amount":"2000"
+  }
+]
+```
 
 #### Trace a Custom Event
 
