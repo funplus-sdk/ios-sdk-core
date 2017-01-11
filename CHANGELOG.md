@@ -1,5 +1,9 @@
 # Changelog
 
+### v4.1.0
+
+* Update README.
+
 ### v4.1.0-alpha.0
 
 * Bugfix #21: Put `LogAgentClient.archive()` to the serial operation queue.
