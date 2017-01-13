@@ -225,7 +225,8 @@ public class FunPlusData: SessionStatusChangeListener {
         - parameter productType:        The type of the product purchased (optional).
         - parameter transactionId:      The unique transaction ID sent back by the payment processor.
         - parameter paymentProcessor:   The payment processor.
-        - parameter itemsReceived:      An array string consisting of one or more items received.
+        - parameter itemsReceived:      An array string consisting of one or more items received (optional).
+        - parameter currencyReceived:   An array string consisting of one or more types of currency received (optional).
      */
     public func tracePayment(
         amount: Double,
@@ -235,8 +236,8 @@ public class FunPlusData: SessionStatusChangeListener {
         productType: String?,
         transactionId: String,
         paymentProcessor: String,
-        itemsReceived: String,
-        currencyReceived: String)
+        itemsReceived: String?,
+        currencyReceived: String?)
     {
         let event = buildDataEvent(
             eventName: "payment",
@@ -248,8 +249,8 @@ public class FunPlusData: SessionStatusChangeListener {
                 "iap_product_type":     productType ?? "",
                 "transaction_id":       transactionId,
                 "payment_processor":    paymentProcessor,
-                "c_items_received":     itemsReceived.toJsonObject() ?? [],
-                "c_currency_received":  currencyReceived.toJsonObject() ?? []
+                "c_items_received":     itemsReceived?.toJsonObject() ?? [],
+                "c_currency_received":  currencyReceived?.toJsonObject() ?? []
             ]
         )
         
