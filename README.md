@@ -211,8 +211,8 @@ The `tracePayment()` method is defined as below:
     - parameter productType:        The type of the product purchased (optional).
     - parameter transactionId:      The unique transaction ID sent back by the payment processor.
     - parameter paymentProcessor:   The payment processor.
-    - parameter itemsReceived:      A string of JSON array, consisting of one or more items received.
-    - parameter currencyReceived:   A string of JSON array, consisting one or more types of currency received.
+    - parameter itemsReceived:      A string of JSON array, consisting of one or more items received (optional).
+    - parameter currencyReceived:   A string of JSON array, consisting one or more types of currency received (optional).
  */
 public func tracePayment(
     amount: Double,
@@ -222,8 +222,8 @@ public func tracePayment(
     productType: String?,
     transactionId: String,
     paymentProcessor: String,
-    itemsReceived: String,
-    currencyReceived: String
+    itemsReceived: String?,
+    currencyReceived: String?
 )
 ```
 
