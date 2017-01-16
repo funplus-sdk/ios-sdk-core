@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D7188A851E2C88FB009173DF /* DeviceInfoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7188A841E2C88FB009173DF /* DeviceInfoTests.swift */; };
 		D72B319D1DBE32B60091B42A /* OCExposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D72B319C1DBE32B60091B42A /* OCExposer.swift */; };
 		D74609F31DACF2CA004DDC98 /* LogAgentClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D74609E01DACF2BA004DDC98 /* LogAgentClientTests.swift */; };
 		D74BB6311DA9E328001E0D8E /* RUMSamplerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D74BB61E1DA9E242001E0D8E /* RUMSamplerTests.swift */; };
@@ -135,6 +136,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		D7188A841E2C88FB009173DF /* DeviceInfoTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DeviceInfoTests.swift; path = Tests/DeviceInfoTests.swift; sourceTree = "<group>"; };
 		D72B319C1DBE32B60091B42A /* OCExposer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OCExposer.swift; path = Source/OCExposer.swift; sourceTree = "<group>"; };
 		D74609E01DACF2BA004DDC98 /* LogAgentClientTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LogAgentClientTests.swift; path = Tests/LogAgentClientTests.swift; sourceTree = "<group>"; };
 		D74BB61E1DA9E242001E0D8E /* RUMSamplerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RUMSamplerTests.swift; path = Tests/RUMSamplerTests.swift; sourceTree = "<group>"; };
@@ -354,6 +356,7 @@
 				D7FDA9511DBCBD11008F370E /* FunPlusDataTests.swift */,
 				D7BBC75F1DD57AEA0029F2E3 /* PassportClientTests.swift */,
 				D7B9EBAA1DE303B300E679FA /* OCExposerTests.swift */,
+				D7188A841E2C88FB009173DF /* DeviceInfoTests.swift */,
 			);
 			name = Tests;
 			sourceTree = "<group>";
@@ -712,6 +715,7 @@
 				D7BBC7601DD57AEA0029F2E3 /* PassportClientTests.swift in Sources */,
 				D763C4791DAE4EF100653F43 /* LoggerTests.swift in Sources */,
 				D76CD1AE1DACD5E3006D47E6 /* FunPlusConfigTests.swift in Sources */,
+				D7188A851E2C88FB009173DF /* DeviceInfoTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
