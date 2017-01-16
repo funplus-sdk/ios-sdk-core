@@ -118,7 +118,6 @@ class LogAgentDataUploader {
             // Compose the request.
             var request = URLRequest(url: url)
             request.httpMethod = "post"
-            request.httpBody = data
             
             // Use the default shared session.
             let session = URLSession.shared
