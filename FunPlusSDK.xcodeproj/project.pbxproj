@@ -121,7 +121,6 @@
 		D7CC8A281DCC9FEC005964EC /* Updatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7CC89E91DCC9FEC005964EC /* Updatable.swift */; };
 		D7CC8A291DCC9FEC005964EC /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7CC89EA1DCC9FEC005964EC /* Utils.swift */; };
 		D7CC8A2A1DCC9FEC005964EC /* ZeroPadding.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7CC89EB1DCC9FEC005964EC /* ZeroPadding.swift */; };
-		D7FDA94E1DBBC083008F370E /* RUMEventValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FDA94D1DBBC083008F370E /* RUMEventValidator.swift */; };
 		D7FDA9521DBCBD11008F370E /* FunPlusDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FDA9511DBCBD11008F370E /* FunPlusDataTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -253,7 +252,6 @@
 		D7CC89E91DCC9FEC005964EC /* Updatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Updatable.swift; path = Source/CryptoSwift/Updatable.swift; sourceTree = "<group>"; };
 		D7CC89EA1DCC9FEC005964EC /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Utils.swift; path = Source/CryptoSwift/Utils.swift; sourceTree = "<group>"; };
 		D7CC89EB1DCC9FEC005964EC /* ZeroPadding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ZeroPadding.swift; path = Source/CryptoSwift/ZeroPadding.swift; sourceTree = "<group>"; };
-		D7FDA94D1DBBC083008F370E /* RUMEventValidator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RUMEventValidator.swift; path = Source/RUMEventValidator.swift; sourceTree = "<group>"; };
 		D7FDA9511DBCBD11008F370E /* FunPlusDataTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FunPlusDataTests.swift; path = Tests/FunPlusDataTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -323,7 +321,6 @@
 				D79154961DA94C8E00CFF124 /* LogLevel.swift */,
 				D79154981DA951F000CFF124 /* FunPlusFactory.swift */,
 				D74BB6331DAA1B46001E0D8E /* LoggerDataConsumer.swift */,
-				D7FDA94D1DBBC083008F370E /* RUMEventValidator.swift */,
 				D72B319C1DBE32B60091B42A /* OCExposer.swift */,
 			);
 			name = Source;
@@ -660,7 +657,6 @@
 				D7CC899B1DCC9FB4005964EC /* MultipartFormData.swift in Sources */,
 				D79154B11DA95B2A00CFF124 /* ConfigManager.swift in Sources */,
 				D7643FFC1DADE1A90030C8CB /* FunPlusSDK.swift in Sources */,
-				D7FDA94E1DBBC083008F370E /* RUMEventValidator.swift in Sources */,
 				D79154AB1DA9596B00CFF124 /* Logger.swift in Sources */,
 				D7CC8A081DCC9FEC005964EC /* CSArrayType+Foundation.swift in Sources */,
 				D7CC89A41DCC9FB4005964EC /* ServerTrustPolicy.swift in Sources */,
