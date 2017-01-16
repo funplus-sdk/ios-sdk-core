@@ -89,7 +89,7 @@ class LogAgentDataUploader {
         let url = "\(self.endpoint)?tag=\(self.tag)&timestamp=\(timestamp)&num=\(batchSize)&signature=\(sig)"
         let requestBody = batch.joined(separator: "\n").data(using: String.Encoding.utf8)
 
-        LogAgentDataUploader.request(url: url, data: requestBody!) { status in
+        LogAgentDataUploader._request(url: url, data: requestBody!) { status in
             completion(status)
         }
     }
@@ -102,7 +102,7 @@ class LogAgentDataUploader {
         - completion:       The completion callback with one parameter
                             indication the request status.
      */
-    private class func request(
+    private class func _request(
         url: String,
         data: Data,
         completion: @escaping (Bool) -> ())
