@@ -42,7 +42,7 @@ Note: If you're using Objective-C in your project, please see the [Objective-C A
 2. Next, select your application project in the Project Navigator (blue project icon) to navigate to the target configuration window and select the application target under the "Targets" heading in the sidebar.
 3. In the tab bar at the top of that window, open the "General" panel.
 4. Click on the `+` button under the "Embedded Binaries" section.
-5. Select the four previously added frameworks into this section.
+5. Select the previously added framework into this section.
 6. And that's it.
 
 ### Install the SDK
