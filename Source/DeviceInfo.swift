@@ -23,15 +23,22 @@ class DeviceInfo {
     /// Device's advertising identifier or `nil`.
     static let advertisingIdentifier: String? = {
         guard ASIdentifierManager.shared().isAdvertisingTrackingEnabled else {
-            return nil;
+            return nil
         }
         
-        return ASIdentifierManager.shared().advertisingIdentifier.uuidString
+        let state: UIApplicationState = UIApplication.shared.applicationState
+        
+        if state != .background {
+            // Chances to crash when calling this in background.
+            return ASIdentifierManager.shared().advertisingIdentifier.uuidString
+        } else {
+            return nil
+        }
     }()
     
     /// Device's operating system name.
     static let systemName: String = {
-        return UIDevice.current.systemName;
+        return UIDevice.current.systemName
     }()
 
     /// Device's operating system version.
@@ -41,7 +48,7 @@ class DeviceInfo {
     
     /// Device's model name.
     static let modelName: String = {
-        return UIDevice.current.model;
+        return UIDevice.current.model
     }()
     
     /// App name or "Unknown".
