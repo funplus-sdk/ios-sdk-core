@@ -122,14 +122,14 @@ import Foundation
     @objc public class func getFPID(
         externalID: String,
         externalIDTypeString: String,
-        onSuccess: @escaping (_ fpid: String) -> Void,
+        onSuccess: @escaping (_ fpid: String, _ sessionKey: String, _ expireIn: Int64) -> Void,
         onFailure: @escaping (_ error: String) -> Void)
     {
         let externalIDType = ExternalIDType(rawValue: externalIDTypeString) ?? ExternalIDType.inAppUserID
         FunPlusSDK.getFunPlusID().get(externalID: externalID, externalIDType: externalIDType) { result in
             switch (result) {
-            case .success(let fpid):
-                onSuccess(fpid)
+            case .success(let fpid, let sessionKey, let expireIn):
+                onSuccess(fpid, sessionKey, expireIn)
                 return
             case .failure(let error):
                 onFailure(error.localizedDescription)
@@ -142,14 +142,14 @@ import Foundation
         fpid: String,
         externalID: String,
         externalIDTypeString: String,
-        onSuccess: @escaping (_ fpid: String) -> Void,
+        onSuccess: @escaping (_ fpid: String, _ sessionKey: String, _ expireIn: Int64) -> Void,
         onFailure: @escaping (_ error: String) -> Void)
     {
         let externalIDType = ExternalIDType(rawValue: externalIDTypeString) ?? ExternalIDType.inAppUserID
         FunPlusSDK.getFunPlusID().bind(fpid: fpid, externalID: externalID, externalIDType: externalIDType) { result in
             switch (result) {
-            case .success(let fpid):
-                onSuccess(fpid)
+            case .success(let fpid, let sessionKey, let expireIn):
+                onSuccess(fpid, sessionKey, expireIn)
                 return
             case .failure(let error):
                 onFailure(error.localizedDescription)

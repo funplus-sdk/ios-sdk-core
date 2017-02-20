@@ -151,7 +151,11 @@ class PassportClient {
                 //     Okay
                 //==============================================
                 self.getLogger().i("Passport response OK")
-                completion(.success(fpid: fpid))
+                
+                let sessionKey = data["session_key"] as? String ?? ""
+                let expireIn = data["session_expire_in"] as? Int64 ?? 0
+                
+                completion(.success(fpid: fpid, sessionKey: sessionKey, expireIn: expireIn))
         }
     }
     

@@ -108,7 +108,7 @@ The objective of the ID module is to provide a unified ID for each unique user a
 ```swift
 FunPlusSDK.getFunPlusID().get(externalID: "{userid}", externalIDType: ExternalIDType.inAppUserID) { res in
     switch (res) {
-    case .success(let fpid):
+    case .success(let fpid, let sessionKey, let expireIn):
     	// Your logic
     case .failure(let error):
     	// Your logic
@@ -121,7 +121,7 @@ FunPlusSDK.getFunPlusID().get(externalID: "{userid}", externalIDType: ExternalID
 ```swift
 FunPlusSDK.getFunPlusID().bind(fpid: "{fpid}", externalID: "{userid}", externalIDType: ExternalIDType.inAppUserID) { res in
     switch (res) {
-    case .success(let fpid):
+    case .success(let fpid, let sessionKey, let expireIn):
     	// Your logic
     case .failure(let error):
     	// Your logic
@@ -366,7 +366,7 @@ The three parameters, `rumEventWhitelistString`, `rumUserWhitelistString` and `r
 ```objective-c
 [OCExposer getFPIDWithExternalID:(NSString *)
             externalIDTypeString:(NSString *)
-                       onSuccess:(void(^)(NSString *fpid))
+                       onSuccess:(void(^)(NSString *fpid, NSString *sessionKey, int64_t expireIn))
                        onFailure:(void(^)(NSString *error))];
 ```
 
@@ -383,7 +383,7 @@ The `externalIDTypeString` parameter takes one of the following values:
 [OCExposer bindFPIDWithFpid:(NSString *)
                  externalID:(NSString *)
        externalIDTypeString:(NSString *)
-                  onSuccess:(void(^)(NSString *fpid))
+                  onSuccess:(void(^)(NSString *fpid, NSString *sessionKey, int64_t expireIn))
                   onFailure:(void(^)(NSString *error))];
 ```
 

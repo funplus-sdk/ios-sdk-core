@@ -19,7 +19,7 @@ public enum FunPlusIDError : Error {
 // MARK: - FunPlusIDResult
 
 public enum FunPlusIDResult {
-    case success(fpid: String)
+    case success(fpid: String, sessionKey: String, expireIn: Int64)
     case failure(error: FunPlusIDError)
 }
 
